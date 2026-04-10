@@ -51,6 +51,7 @@ async function main() {
   }
   cpSync(resolve(root, "icons"), resolve(dist, "icons"), { recursive: true });
   cpSync(resolve(root, "_locales"), resolve(dist, "_locales"), { recursive: true });
+  cpSync(resolve(root, "fonts"), resolve(dist, "fonts"), { recursive: true });
 
   console.log("Build complete → dist/");
 }

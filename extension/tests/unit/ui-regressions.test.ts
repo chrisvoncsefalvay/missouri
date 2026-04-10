@@ -125,6 +125,36 @@ describe("UI regression guards", () => {
     });
   });
 
+  describe("panel chrome regressions", () => {
+    it("does not render a title heading in the settings panel", () => {
+      ensureUi();
+      state.expandedPanel = "settings";
+      Object.defineProperty(refs.toolbar!.querySelector(".mo-toolbar-row") as HTMLElement, "offsetWidth", {
+        value: 240,
+        configurable: true,
+      });
+
+      renderToolbarPanel();
+
+      const panel = refs.toolbar!.querySelector(".mo-toolbar-panel") as HTMLElement;
+      expect(panel.querySelector(".mo-panel-title")).toBeNull();
+    });
+
+    it("does not render a title heading in the annotations panel", () => {
+      ensureUi();
+      state.expandedPanel = "list";
+      Object.defineProperty(refs.toolbar!.querySelector(".mo-toolbar-row") as HTMLElement, "offsetWidth", {
+        value: 240,
+        configurable: true,
+      });
+
+      renderToolbarPanel();
+
+      const panel = refs.toolbar!.querySelector(".mo-toolbar-panel") as HTMLElement;
+      expect(panel.querySelector(".mo-panel-title")).toBeNull();
+    });
+  });
+
   /* ────────────────────────────────────────────────────────
    * 3. Overlay visibility persists across state
    * ──────────────────────────────────────────────────────── */
@@ -202,6 +232,160 @@ describe("UI regression guards", () => {
       const mainRule = rules.find((r) => r.includes("overflow"));
       expect(mainRule).toBeTruthy();
       expect(mainRule!).toContain("overflow-x: hidden");
+    });
+
+    it("toolbar-panel remains visually transparent instead of becoming a second surface", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      const panelRules = [...css.matchAll(/^\.mo-toolbar-panel\s*\{[^}]+\}/gm)].map((match) => match[0]);
+      const panelRule = panelRules.find((rule) => rule.includes("background"));
+      expect(panelRule).toBeTruthy();
+      expect(panelRule!).toContain("background: transparent");
+      expect(panelRule!).toContain("box-shadow: none");
+      expect(panelRule!).toContain("backdrop-filter: none");
+
+      const sharedSurfaceRule = css.match(
+        /\.mo-toolbar,\s*\n(?:\.[^\n]+,\s*\n)*\.mo-marker-note\s*\{[^}]+\}/m,
+      );
+      expect(sharedSurfaceRule).toBeTruthy();
+      expect(sharedSurfaceRule![0]).not.toContain(".mo-toolbar-panel");
+    });
+
+    it("toolbar-panel uses a short entry animation instead of instant appearance", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      const panelRules = [...css.matchAll(/^\.mo-toolbar-panel\s*\{[^}]+\}/gm)].map((match) => match[0]);
+      const panelRule = panelRules.find((rule) => rule.includes("animation"));
+      expect(panelRule).toBeTruthy();
+      expect(panelRule!).toContain("transform-origin: top right");
+      expect(panelRule!).toContain("animation: mo-toolbar-panel-in");
+    });
+  });
+
+  describe("toolbar segmented spacing", () => {
+    it("toolbar segments have zero inner gap and zero horizontal padding in CSS", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      const segmentMatch = css.match(/\.mo-toolbar-segment\s*\{[^}]+\}/);
+      expect(segmentMatch).toBeTruthy();
+      expect(segmentMatch![0]).toContain("gap: 0");
+
+      const shellMatch = css.match(/\.mo-toolbar-segment-annotate,[\s\S]*?\.mo-toolbar-segment-system\s*\{[^}]+\}/);
+      expect(shellMatch).toBeTruthy();
+      expect(shellMatch![0]).toContain("padding: 0");
+    });
+
+    it("toolbar segment buttons are styled as flush grouped controls in CSS", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      const groupedButtonMatch = css.match(/\.mo-toolbar-segment > \.mo-toolbar-btn\s*\{[^}]+\}/);
+      expect(groupedButtonMatch).toBeTruthy();
+      expect(groupedButtonMatch![0]).toContain("border: 0");
+      expect(groupedButtonMatch![0]).toContain("border-radius: 0");
+    });
+  });
+
+  describe("motion guards", () => {
+    it("list items animate in with a bounded stagger token", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      const listItemMatch = css.match(/\.mo-list-item\s*\{[^}]+\}/);
+      expect(listItemMatch).toBeTruthy();
+      expect(listItemMatch![0]).toContain("animation: mo-list-item-in");
+      expect(listItemMatch![0]).toContain("animation-delay: calc(var(--mo-list-index, 0) * 18ms)");
+    });
+
+    it("reduced-motion mode disables the added panel and icon transitions", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      const reducedMotionStart = css.indexOf("@media (prefers-reduced-motion: reduce)");
+      const reducedMotionEnd = css.indexOf("/* ── Undo toast", reducedMotionStart);
+      expect(reducedMotionStart).toBeGreaterThan(-1);
+      expect(reducedMotionEnd).toBeGreaterThan(reducedMotionStart);
+
+      const reducedMotionBlock = css.slice(reducedMotionStart, reducedMotionEnd);
+      expect(reducedMotionBlock).toContain(".mo-toolbar-panel");
+      expect(reducedMotionBlock).toContain(".mo-collapse-logo");
+      expect(reducedMotionBlock).toContain(".mo-toolbar-btn svg");
+      expect(reducedMotionBlock).toContain(".mo-compact-btn svg");
+      expect(reducedMotionBlock).toContain(".mo-list-body");
+    });
+  });
+
+  describe("typography tokens", () => {
+    it("defines a fixed UI type scale in root CSS tokens", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      const rootMatch = css.match(/#mo-marker-root\s*\{[^}]+\}/);
+      expect(rootMatch).toBeTruthy();
+      expect(rootMatch![0]).toContain("--mo-text-kicker-size");
+      expect(rootMatch![0]).toContain("--mo-text-meta-size");
+      expect(rootMatch![0]).toContain("--mo-text-body-size");
+      expect(rootMatch![0]).toContain("--mo-text-title-size");
+    });
+
+    it("packages Geist Sans and Geist Mono via font-face declarations", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      expect(css).toContain('font-family: "Geist Sans"');
+      expect(css).toContain('url("./fonts/GeistVF.woff2")');
+      expect(css).toContain('font-family: "Geist Mono"');
+      expect(css).toContain('url("./fonts/GeistMonoVF.woff2")');
+    });
+
+    it("uses Geist Sans as the primary UI font token", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      const rootMatch = css.match(/#mo-marker-root\s*\{[^}]+\}/);
+      expect(rootMatch).toBeTruthy();
+      expect(rootMatch![0]).toContain('--mo-font-ui: "Geist Sans"');
+    });
+
+    it("uses title tokens for primary annotation and info text", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      const titleRule = css.match(/\.mo-info-name,[\s\S]*?\.mo-thread-author\s*\{[^}]+\}/);
+      expect(titleRule).toBeTruthy();
+      expect(titleRule![0]).toContain("font-size: var(--mo-text-title-size)");
+      expect(titleRule![0]).toContain("line-height: var(--mo-text-title-line)");
+    });
+
+    it("does not use italic fallback text styling", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      expect(css).not.toContain("font-style: italic");
+    });
+
+    it("settings toggles use the same secondary text color tier as peer labels", () => {
+      const fs = require("fs");
+      const path = require("path");
+      const css = fs.readFileSync(path.join(__dirname, "../../content-styles.css"), "utf8");
+
+      const toggleRule = css.match(/\.mo-settings-toggle\s*\{[^}]+\}/);
+      expect(toggleRule).toBeTruthy();
+      expect(toggleRule![0]).toContain("color: var(--mo-fg-secondary");
     });
   });
 });

@@ -2,7 +2,8 @@
   "manifest_version": 3,
   "name": "__MSG_extName__",
   "default_locale": "en",
-  "version": "0.1.0",
+  "version": "1.0.1",
+  "version_name": "1.0.1-beta",
   "description": "__MSG_extDescription__",
   "permissions": [
     "storage",
@@ -50,7 +51,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["icons/logo-32.png"],
+      "resources": ["icons/logo-32.png", "fonts/*.woff2"],
       "matches": ["http://*/*", "https://*/*"]
     }
   ],

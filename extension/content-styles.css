@@ -1,8 +1,24 @@
 /* ── Missouri — Content Styles ──────────────────
-   Design tokens: restrained neutrals, Aptos + Iowan, subtle glass.
+   Design tokens: restrained neutrals, Geist Sans + Geist Mono, subtle glass.
    Motion: cubic-bezier(0.32, 0.72, 0, 1), 200ms in, 150ms out.
    Markers: flat fills, 4 functional colors.
    ────────────────────────────────────────────── */
+
+@font-face {
+  font-family: "Geist Sans";
+  src: url("./fonts/GeistVF.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("./fonts/GeistMonoVF.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
 
 /*
  * Design tokens (reference only — inlined because `all: initial` on children
@@ -29,41 +45,66 @@
   inset: 0;
   z-index: 2147483647;
   pointer-events: none;
-  font-family: "Aptos", "Segoe UI Variable Text", "SF Pro Text", "Helvetica Neue", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Geist Sans", "Segoe UI Variable Text", "SF Pro Text", "Helvetica Neue", -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 1rem;
   line-height: 1.55;
   color: #18202c;
   color-scheme: light;
-  --mo-font-ui: "Aptos", "Segoe UI Variable Text", "SF Pro Text", "Helvetica Neue", -apple-system, BlinkMacSystemFont, sans-serif;
-  --mo-font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "URW Palladio L", "Charter", serif;
-  --mo-font-mono: "JetBrains Mono", "Cascadia Mono", "SF Mono", ui-monospace, monospace;
+  --mo-font-ui: "Geist Sans", "Segoe UI Variable Text", "SF Pro Text", "Helvetica Neue", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mo-font-display: "Geist Sans", "Segoe UI Variable Text", "SF Pro Text", "Helvetica Neue", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mo-font-mono: "Geist Mono", "JetBrains Mono", "Cascadia Mono", "SF Mono", ui-monospace, monospace;
   --mo-weight-regular: 400;
   --mo-weight-medium: 500;
   --mo-weight-strong: 600;
   --mo-weight-display: 700;
-  --mo-text-kicker-size: 0.75rem;
-  --mo-text-kicker-line: 1.1;
-  --mo-text-kicker-track: 0.12em;
-  --mo-text-meta-size: 0.875rem;
-  --mo-text-meta-line: 1.45;
-  --mo-text-body-size: 1rem;
-  --mo-text-body-line: 1.55;
-  --mo-text-code-size: 0.8125rem;
+  --mo-text-kicker-size: 0.6875rem;
+  --mo-text-kicker-line: 1.15;
+  --mo-text-kicker-track: 0.08em;
+  --mo-text-meta-size: 0.75rem;
+  --mo-text-meta-line: 1.25;
+  --mo-text-body-size: 0.875rem;
+  --mo-text-body-line: 1.45;
+  --mo-text-title-size: 0.9375rem;
+  --mo-text-title-line: 1.25;
+  --mo-text-code-size: 0.75rem;
   --mo-track-tight: -0.03em;
-  --mo-fg: oklch(0.22 0.02 255);
-  --mo-fg-secondary: oklch(0.44 0.016 252);
-  --mo-fg-tertiary: oklch(0.59 0.014 252);
-  --mo-surface: color-mix(in oklch, oklch(0.985 0.004 250) 86%, oklch(0.83 0.02 250) 14%);
-  --mo-surface-strong: oklch(0.94 0.012 250);
-  --mo-surface-soft: oklch(0.97 0.008 250);
-  --mo-line: oklch(0.85 0.012 250);
-  --mo-line-strong: oklch(0.77 0.015 250);
-  --mo-accent: oklch(0.52 0.13 252);
-  --mo-accent-strong: oklch(0.33 0.06 248);
-  --mo-danger: oklch(0.58 0.19 26);
+  --mo-fg: oklch(0.24 0.018 252);
+  --mo-fg-secondary: oklch(0.47 0.013 252);
+  --mo-fg-tertiary: oklch(0.62 0.012 252);
+  --mo-accent: oklch(0.58 0.1 253);
+  --mo-accent-strong: oklch(0.32 0.034 252);
+  --mo-accent-soft: color-mix(in oklch, var(--mo-accent) 12%, white);
+  --mo-danger: oklch(0.61 0.18 26);
   --mo-danger-soft: color-mix(in oklch, var(--mo-danger) 12%, white);
-  --mo-shadow: 0 18px 44px rgba(24, 34, 56, 0.12);
-  --mo-panel-blur: blur(18px) saturate(1.15);
+  --mo-surface: oklch(0.985 0.004 252);
+  --mo-surface-soft: color-mix(in oklch, var(--mo-surface) 88%, oklch(0.94 0.008 250) 12%);
+  --mo-surface-muted: color-mix(in oklch, var(--mo-fg) 3%, var(--mo-surface));
+  --mo-surface-raised: color-mix(in oklch, var(--mo-surface) 90%, white 10%);
+  --mo-surface-overlay: color-mix(in oklch, var(--mo-surface) 86%, white 14%);
+  --mo-line: oklch(0.87 0.01 252);
+  --mo-line-strong: oklch(0.79 0.014 252);
+  --mo-hover: color-mix(in oklch, var(--mo-fg) 4%, transparent);
+  --mo-hover-strong: color-mix(in oklch, var(--mo-fg) 6%, transparent);
+  --mo-press: color-mix(in oklch, var(--mo-fg) 10%, transparent);
+  --mo-focus-ring: color-mix(in oklch, var(--mo-accent) 34%, transparent);
+  --mo-radius-xs: 8px;
+  --mo-radius-sm: 10px;
+  --mo-radius-md: 14px;
+  --mo-radius-lg: 18px;
+  --mo-space-1: 4px;
+  --mo-space-2: 8px;
+  --mo-space-3: 12px;
+  --mo-space-4: 16px;
+  --mo-space-5: 24px;
+  --mo-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --mo-ease-quick: cubic-bezier(0.32, 0.72, 0, 1);
+  --mo-dur-press: 140ms;
+  --mo-dur-state: 200ms;
+  --mo-dur-panel: 240ms;
+  --mo-shadow-xs: 0 1px 2px rgba(20, 30, 48, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.24) inset;
+  --mo-shadow-sm: 0 10px 24px rgba(20, 30, 48, 0.1), 0 2px 8px rgba(20, 30, 48, 0.06);
+  --mo-shadow: 0 20px 48px rgba(20, 30, 48, 0.14), 0 6px 18px rgba(20, 30, 48, 0.08);
+  --mo-panel-blur: blur(18px) saturate(1.16);
   font-kerning: normal;
   text-rendering: optimizeLegibility;
 }
@@ -71,19 +112,28 @@
 #mo-marker-root[data-theme="dark"] {
   color: oklch(0.95 0.008 250);
   color-scheme: dark;
-  --mo-fg: oklch(0.95 0.008 250);
-  --mo-fg-secondary: oklch(0.78 0.012 250);
-  --mo-fg-tertiary: oklch(0.64 0.014 250);
-  --mo-surface: color-mix(in oklch, oklch(0.24 0.014 255) 88%, oklch(0.39 0.05 252) 12%);
-  --mo-surface-strong: oklch(0.29 0.018 255);
-  --mo-surface-soft: oklch(0.21 0.012 255);
-  --mo-line: oklch(0.35 0.012 255);
-  --mo-line-strong: oklch(0.44 0.018 255);
-  --mo-accent: oklch(0.72 0.1 250);
-  --mo-accent-strong: oklch(0.85 0.02 250);
-  --mo-danger: oklch(0.69 0.17 28);
-  --mo-danger-soft: color-mix(in oklch, var(--mo-danger) 16%, transparent);
-  --mo-shadow: 0 22px 48px rgba(0, 0, 0, 0.4);
+  --mo-fg: oklch(0.95 0.008 252);
+  --mo-fg-secondary: oklch(0.8 0.012 252);
+  --mo-fg-tertiary: oklch(0.66 0.014 252);
+  --mo-accent: oklch(0.75 0.09 253);
+  --mo-accent-strong: oklch(0.92 0.016 252);
+  --mo-accent-soft: color-mix(in oklch, var(--mo-accent) 16%, transparent);
+  --mo-danger: oklch(0.71 0.16 28);
+  --mo-danger-soft: color-mix(in oklch, var(--mo-danger) 18%, transparent);
+  --mo-surface: oklch(0.24 0.012 255);
+  --mo-surface-soft: color-mix(in oklch, var(--mo-surface) 86%, oklch(0.18 0.01 255) 14%);
+  --mo-surface-muted: color-mix(in oklch, var(--mo-fg) 4%, var(--mo-surface));
+  --mo-surface-raised: color-mix(in oklch, var(--mo-surface) 92%, white 8%);
+  --mo-surface-overlay: color-mix(in oklch, var(--mo-surface) 84%, oklch(0.36 0.02 252) 16%);
+  --mo-line: oklch(0.36 0.012 255);
+  --mo-line-strong: oklch(0.47 0.018 255);
+  --mo-hover: color-mix(in oklch, var(--mo-fg) 6%, transparent);
+  --mo-hover-strong: color-mix(in oklch, var(--mo-fg) 9%, transparent);
+  --mo-press: color-mix(in oklch, var(--mo-fg) 14%, transparent);
+  --mo-focus-ring: color-mix(in oklch, var(--mo-accent) 32%, transparent);
+  --mo-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  --mo-shadow-sm: 0 14px 28px rgba(0, 0, 0, 0.28), 0 3px 10px rgba(0, 0, 0, 0.16);
+  --mo-shadow: 0 24px 56px rgba(0, 0, 0, 0.34), 0 10px 26px rgba(0, 0, 0, 0.22);
 }
 
 /* Force-hide cursor on entire page when placing annotations */
@@ -116,72 +166,108 @@ html.mo-hide-cursor *::after {
   z-index: 2147483647;
   display: flex;
   flex-direction: column;
-  padding: 6px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(16px) saturate(1.5);
+  padding: var(--mo-space-1);
+  border-radius: var(--mo-radius-lg);
+  background: color-mix(in oklch, var(--mo-surface-overlay) 88%, transparent);
+  border: 1px solid color-mix(in oklch, var(--mo-line) 84%, white 16%);
+  box-shadow: var(--mo-shadow);
+  backdrop-filter: var(--mo-panel-blur);
   pointer-events: auto;
-  animation: mo-fade-in 200ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  animation: mo-fade-in var(--mo-dur-state) var(--mo-ease-quick) both;
 }
 
 .mo-toolbar-row {
   all: initial;
   display: flex;
-  gap: 4px;
+  gap: var(--mo-space-1);
   align-items: center;
 }
 
 .mo-toolbar.mo-closing {
-  animation: mo-fade-out 150ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  animation: mo-fade-out var(--mo-dur-press) var(--mo-ease-quick) both;
 }
 
 .mo-toolbar-segment {
   all: initial;
   display: flex;
-  gap: 4px;
+  gap: 0;
   align-items: center;
 }
 
-.mo-toolbar-segment-markers {
-  padding: 2px;
-  border-radius: 12px;
-  background: color-mix(in oklch, var(--mo-fg, #0a0a0a) 4%, transparent);
-  border: 1px solid color-mix(in oklch, var(--mo-fg, #0a0a0a) 5%, transparent);
+.mo-toolbar-segment-annotate,
+.mo-toolbar-segment-utility,
+.mo-toolbar-segment-system {
+  padding: 0;
+  border-radius: calc(var(--mo-radius-md) - 2px);
+  background: color-mix(in oklch, var(--mo-surface-raised) 92%, transparent);
+  border: 1px solid color-mix(in oklch, var(--mo-line) 78%, transparent);
+  box-shadow: var(--mo-shadow-xs);
+  overflow: hidden;
+}
+
+.mo-toolbar-segment-annotate {
+  background: color-mix(in oklch, var(--mo-accent-soft) 34%, var(--mo-surface-raised));
+}
+
+.mo-toolbar-segment-utility,
+.mo-toolbar-segment-system {
+  background: color-mix(in oklch, var(--mo-fg) 1.5%, var(--mo-surface-raised));
+}
+
+.mo-toolbar-segment > .mo-toolbar-btn {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.mo-toolbar-segment > .mo-toolbar-btn:first-child {
+  border-top-left-radius: calc(var(--mo-radius-md) - 3px);
+  border-bottom-left-radius: calc(var(--mo-radius-md) - 3px);
+}
+
+.mo-toolbar-segment > .mo-toolbar-btn:last-child {
+  border-top-right-radius: calc(var(--mo-radius-md) - 3px);
+  border-bottom-right-radius: calc(var(--mo-radius-md) - 3px);
+}
+
+.mo-toolbar-segment > .mo-toolbar-btn + .mo-toolbar-btn {
+  box-shadow: inset 1px 0 0 color-mix(in oklch, var(--mo-line) 76%, transparent);
 }
 
 .mo-toolbar-divider {
   all: initial;
   width: 1px;
-  height: 16px;
+  height: 20px;
   margin: 0 2px;
-  background: rgba(0, 0, 0, 0.12);
+  background: color-mix(in oklch, var(--mo-line-strong) 88%, transparent);
   border-radius: 1px;
 }
 
 /* Collapse button (logo drag handle) */
 .mo-collapse-btn {
   all: initial;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: calc(var(--mo-radius-md) - 2px);
   display: grid;
   place-items: center;
   cursor: grab;
   background: transparent;
-  transition: background 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              transform 150ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: background var(--mo-dur-press) var(--mo-ease-quick),
+              transform var(--mo-dur-press) var(--mo-ease-standard),
+              box-shadow var(--mo-dur-press) var(--mo-ease-quick);
   flex-shrink: 0;
 }
 
 .mo-collapse-btn:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--mo-hover);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--mo-line) 72%, transparent);
 }
 
 .mo-collapse-btn:active {
   cursor: grabbing;
-  transform: scale(0.94);
+  transform: scale(0.95);
 }
 
 .mo-collapse-logo {
@@ -194,24 +280,37 @@ html.mo-hide-cursor *::after {
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
-  transition: filter 200ms ease-out;
+  transition: transform var(--mo-dur-press) var(--mo-ease-standard),
+              filter 200ms ease-out;
 }
 
 #mo-marker-root[data-theme="dark"] .mo-collapse-logo {
   filter: invert(1) brightness(0.92);
 }
 
+.mo-collapse-btn:hover .mo-collapse-logo,
+.mo-collapse-btn:focus-visible .mo-collapse-logo {
+  transform: scale(1.04);
+}
+
 /* ── Collapsed state ─────────────────────────── */
 .mo-toolbar.mo-collapsed {
-  padding: 3px;
+  padding: 1px;
+  overflow: hidden;
+  width: auto;
 }
 
 /* Animate items away on collapse */
+.mo-toolbar.mo-collapsed .mo-toolbar-row {
+  gap: 0;
+}
+
 .mo-toolbar.mo-collapsed .mo-toolbar-row > :not(.mo-collapse-btn) {
   max-width: 0;
   max-height: 0;
   padding: 0;
   margin: 0;
+  border-width: 0;
   opacity: 0;
   overflow: hidden;
   pointer-events: none;
@@ -228,6 +327,7 @@ html.mo-hide-cursor *::after {
   max-height: 40px;
   opacity: 1;
   overflow: visible;
+  border-width: initial;
   transition: max-width 280ms cubic-bezier(0.32, 0.72, 0, 1) 40ms,
               max-height 280ms cubic-bezier(0.32, 0.72, 0, 1) 40ms,
               opacity 200ms cubic-bezier(0.32, 0.72, 0, 1) 80ms;
@@ -255,41 +355,55 @@ html.mo-hide-cursor *::after {
 /* Icon toolbar buttons */
 .mo-toolbar-btn {
   all: initial;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: rgba(255, 255, 255, 0.8);
-  color: #666666;
+  width: 38px;
+  height: 38px;
+  border-radius: calc(var(--mo-radius-md) - 2px);
+  border: 1px solid color-mix(in oklch, var(--mo-line) 76%, transparent);
+  background: color-mix(in oklch, var(--mo-surface-raised) 92%, transparent);
+  color: var(--mo-fg-secondary, #666666);
   cursor: pointer;
   display: grid;
   place-items: center;
-  transition: background 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              color 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              border-color 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              box-shadow 150ms cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: var(--mo-shadow-xs);
+  transition: transform var(--mo-dur-press) var(--mo-ease-standard),
+              background var(--mo-dur-press) var(--mo-ease-quick),
+              color var(--mo-dur-press) var(--mo-ease-quick),
+              border-color var(--mo-dur-press) var(--mo-ease-quick),
+              box-shadow var(--mo-dur-press) var(--mo-ease-quick);
 }
 
 .mo-toolbar-btn:hover {
-  background: #ffffff;
-  color: #0a0a0a;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  background: color-mix(in oklch, var(--mo-surface-raised) 78%, white 22%);
+  color: var(--mo-fg, #0a0a0a);
+  border-color: color-mix(in oklch, var(--mo-line-strong) 74%, transparent);
+  box-shadow: var(--mo-shadow-sm);
+  transform: translateY(-1px);
 }
 
 .mo-toolbar-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 .mo-toolbar-btn[data-active="true"] {
-  background: #0a0a0a;
-  border-color: #0a0a0a;
-  color: #ffffff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  background: color-mix(in oklch, var(--mo-accent) 18%, var(--mo-accent-strong));
+  border-color: color-mix(in oklch, var(--mo-accent) 46%, var(--mo-accent-strong));
+  color: oklch(0.98 0.003 250);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--mo-accent) 18%, transparent);
 }
 
 .mo-toolbar-btn svg {
   width: 15px;
   height: 15px;
+  transition: transform var(--mo-dur-press) var(--mo-ease-standard);
+}
+
+.mo-toolbar-btn:hover svg,
+.mo-toolbar-btn:focus-visible svg {
+  transform: translateY(-1px) scale(1.04);
+}
+
+.mo-toolbar-btn[data-active="true"] svg {
+  transform: scale(0.96);
 }
 
 .mo-toolbar-btn {
@@ -354,19 +468,19 @@ html.mo-hide-cursor *::after {
 }
 
 .mo-toolbar-btn-quiet:hover {
-  background: color-mix(in oklch, var(--mo-fg, #0a0a0a) 5%, transparent);
-  border-color: color-mix(in oklch, var(--mo-fg, #0a0a0a) 6%, transparent);
+  background: var(--mo-hover);
+  border-color: color-mix(in oklch, var(--mo-line) 68%, transparent);
 }
 
 .mo-toolbar-btn-danger {
   color: var(--mo-danger, #dc2626);
-  border-color: color-mix(in oklch, var(--mo-danger, #dc2626) 18%, transparent);
-  background: color-mix(in oklch, var(--mo-danger, #dc2626) 7%, transparent);
+  border-color: color-mix(in oklch, var(--mo-danger, #dc2626) 22%, transparent);
+  background: color-mix(in oklch, var(--mo-danger, #dc2626) 9%, transparent);
 }
 
 .mo-toolbar-btn-danger:hover {
   background: var(--mo-danger-soft, rgba(220, 38, 38, 0.08));
-  border-color: color-mix(in oklch, var(--mo-danger, #dc2626) 28%, transparent);
+  border-color: color-mix(in oklch, var(--mo-danger, #dc2626) 34%, transparent);
   color: var(--mo-danger, #dc2626);
 }
 
@@ -375,9 +489,12 @@ html.mo-hide-cursor *::after {
 .mo-toolbar-panel {
   all: initial;
   display: block;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  margin-top: 4px;
-  padding-top: 8px;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  border-top: 1px solid color-mix(in oklch, var(--mo-line) 84%, transparent);
+  margin-top: var(--mo-space-1);
+  padding-top: var(--mo-space-2);
   width: 100%;
   max-height: min(50vh, 400px);
   box-sizing: border-box;
@@ -385,8 +502,10 @@ html.mo-hide-cursor *::after {
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  font: 500 11px/1.4 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
-  color: #0a0a0a;
+  font: 500 11px/1.4 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  color: var(--mo-fg, #0a0a0a);
+  transform-origin: top right;
+  animation: mo-toolbar-panel-in 220ms var(--mo-ease-standard) both;
 }
 
 .mo-toolbar-panel::-webkit-scrollbar {
@@ -396,11 +515,11 @@ html.mo-hide-cursor *::after {
 .mo-panel-title {
   all: initial;
   display: block;
-  margin-bottom: 6px;
-  font: 500 9px/1 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
-  color: #999999;
+  margin-bottom: var(--mo-space-2);
+  font: 600 9px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  color: var(--mo-fg-tertiary, #999999);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 
 /* ── Settings panel ─────────────────────────────── */
@@ -409,12 +528,13 @@ html.mo-hide-cursor *::after {
   all: initial;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px;
-  border-radius: 8px;
-  background: color-mix(in oklch, var(--mo-fg, #0a0a0a) 2%, transparent);
-  border: 1px solid color-mix(in oklch, var(--mo-fg, #0a0a0a) 3%, transparent);
-  margin-bottom: 8px;
+  gap: var(--mo-space-2);
+  padding: var(--mo-space-3);
+  border-radius: var(--mo-radius-md);
+  background: color-mix(in oklch, var(--mo-surface-raised) 92%, transparent);
+  border: 1px solid color-mix(in oklch, var(--mo-line) 82%, transparent);
+  box-shadow: var(--mo-shadow-xs);
+  margin-bottom: var(--mo-space-2);
   box-sizing: border-box;
   width: 100%;
 }
@@ -424,10 +544,10 @@ html.mo-hide-cursor *::after {
   all: initial;
   display: block;
   margin-bottom: 1px;
-  font: 500 9px/1 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
+  font: 600 9px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   color: var(--mo-fg-tertiary, #999999);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 
 .mo-settings-sublabel {
@@ -440,8 +560,9 @@ html.mo-hide-cursor *::after {
   align-items: stretch;
   gap: 2px;
   padding: 2px;
-  border-radius: 7px;
-  background: color-mix(in oklch, var(--mo-fg, #0a0a0a) 5%, transparent);
+  border-radius: calc(var(--mo-radius-sm) - 1px);
+  background: color-mix(in oklch, var(--mo-fg, #0a0a0a) 4%, transparent);
+  border: 1px solid color-mix(in oklch, var(--mo-line) 74%, transparent);
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
@@ -454,33 +575,39 @@ html.mo-hide-cursor *::after {
   align-items: center;
   justify-content: center;
   min-width: 0;
-  min-height: 28px;
-  padding: 4px 6px;
-  font: 500 10px/1 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
+  min-height: 30px;
+  padding: 6px 8px;
+  font: 600 10px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   text-align: center;
   color: var(--mo-fg-secondary, #666666);
   background: transparent;
   cursor: pointer;
-  border-radius: 7px;
+  border-radius: calc(var(--mo-radius-sm) - 3px);
   box-shadow: inset 0 0 0 1px transparent;
-  transition: background 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              color 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              box-shadow 150ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform var(--mo-dur-press) var(--mo-ease-standard),
+              background var(--mo-dur-press) var(--mo-ease-quick),
+              color var(--mo-dur-press) var(--mo-ease-quick),
+              box-shadow var(--mo-dur-press) var(--mo-ease-quick);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .mo-settings-seg-btn:hover {
-  background: color-mix(in oklch, var(--mo-surface, #fff) 60%, transparent);
+  background: color-mix(in oklch, var(--mo-surface-raised) 74%, white 26%);
   color: var(--mo-fg, #0a0a0a);
-  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--mo-fg, #0a0a0a) 5%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--mo-line-strong) 56%, transparent);
+  transform: translateY(-1px);
 }
 
 .mo-settings-seg-btn[data-active="true"] {
-  background: var(--mo-surface, #ffffff);
+  background: color-mix(in oklch, var(--mo-accent-soft) 26%, var(--mo-surface-raised));
   color: var(--mo-fg, #0a0a0a);
-  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--mo-fg, #0a0a0a) 6%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--mo-accent) 16%, var(--mo-line));
+}
+
+.mo-settings-seg-btn:active {
+  transform: scale(0.98);
 }
 
 .mo-settings-toggle {
@@ -488,24 +615,30 @@ html.mo-hide-cursor *::after {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: var(--mo-space-2);
   cursor: pointer;
-  padding: 3px 0;
-  font: 500 10px/1 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
-  color: var(--mo-fg, #0a0a0a);
+  padding: 4px 0;
+  font: 600 10px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  color: var(--mo-fg-secondary, #666666);
+}
+
+.mo-settings-toggle:hover input[type="checkbox"] {
+  background: color-mix(in oklch, var(--mo-fg, #0a0a0a) 18%, transparent);
 }
 
 /* Hide native checkbox, use custom track */
 .mo-settings-toggle input[type="checkbox"] {
   all: initial;
   position: relative;
-  width: 28px;
-  height: 16px;
+  width: 30px;
+  height: 18px;
   border-radius: 999px;
-  background: color-mix(in oklch, var(--mo-fg, #0a0a0a) 12%, transparent);
+  background: color-mix(in oklch, var(--mo-fg, #0a0a0a) 14%, transparent);
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 180ms cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--mo-line) 70%, transparent);
+  transition: background var(--mo-dur-state) var(--mo-ease-quick),
+              box-shadow var(--mo-dur-state) var(--mo-ease-quick);
   appearance: none;
   -webkit-appearance: none;
 }
@@ -515,12 +648,13 @@ html.mo-hide-cursor *::after {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background: var(--mo-surface, #ffffff);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
-  transition: transform 180ms cubic-bezier(0.32, 0.72, 0, 1);
+  background: color-mix(in oklch, var(--mo-surface-raised) 92%, white 8%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
+  transition: transform var(--mo-dur-state) var(--mo-ease-standard),
+              box-shadow var(--mo-dur-state) var(--mo-ease-quick);
 }
 
 .mo-settings-toggle input[type="checkbox"]:checked {
@@ -529,6 +663,7 @@ html.mo-hide-cursor *::after {
 
 .mo-settings-toggle input[type="checkbox"]:checked::after {
   transform: translateX(12px);
+  box-shadow: 0 3px 10px color-mix(in oklch, var(--mo-accent) 18%, transparent);
 }
 
 /* ── Settings ──────────────────────────────────── */
@@ -543,6 +678,107 @@ html.mo-hide-cursor *::after {
 
 
 /* ── Info section ──────────────────────────────────── */
+
+.mo-info-group {
+  gap: var(--mo-space-3);
+}
+
+.mo-info-row {
+  all: initial;
+  display: flex;
+  align-items: center;
+  gap: var(--mo-space-3);
+}
+
+.mo-info-logo {
+  all: initial;
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  flex-shrink: 0;
+  box-shadow: var(--mo-shadow-xs);
+}
+
+.mo-info-text {
+  all: initial;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mo-info-name {
+  all: initial;
+  display: block;
+  color: var(--mo-fg, #0a0a0a);
+  font: 700 13px/1.1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  letter-spacing: -0.01em;
+}
+
+.mo-info-version {
+  all: initial;
+  display: block;
+  color: var(--mo-fg-tertiary, #999999);
+  font: 600 10px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  font-variant-numeric: tabular-nums;
+}
+
+.mo-info-links,
+.mo-info-install-buttons {
+  all: initial;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mo-space-2);
+}
+
+.mo-info-link {
+  all: initial;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--mo-line) 78%, transparent);
+  background: color-mix(in oklch, var(--mo-surface-raised) 92%, transparent);
+  color: var(--mo-fg-secondary, #666666);
+  font: 600 10px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--mo-dur-press) var(--mo-ease-standard),
+              background var(--mo-dur-press) var(--mo-ease-quick),
+              color var(--mo-dur-press) var(--mo-ease-quick),
+              border-color var(--mo-dur-press) var(--mo-ease-quick),
+              box-shadow var(--mo-dur-press) var(--mo-ease-quick);
+}
+
+.mo-info-link:hover {
+  background: color-mix(in oklch, var(--mo-accent-soft) 24%, var(--mo-surface-raised));
+  border-color: color-mix(in oklch, var(--mo-accent) 16%, var(--mo-line));
+  color: var(--mo-fg, #0a0a0a);
+  box-shadow: var(--mo-shadow-xs);
+  transform: translateY(-1px);
+}
+
+.mo-info-link:active {
+  transform: scale(0.97);
+}
+
+.mo-info-install-block {
+  all: initial;
+  display: grid;
+  gap: var(--mo-space-2);
+  padding-top: var(--mo-space-2);
+  border-top: 1px solid color-mix(in oklch, var(--mo-line) 74%, transparent);
+}
+
+.mo-info-install-title {
+  all: initial;
+  display: block;
+  color: var(--mo-fg-secondary, #666666);
+  font: 600 10px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+}
 
 .mo-list-group {
   gap: 4px;
@@ -597,7 +833,8 @@ html.mo-hide-cursor *::after {
   border-radius: 8px;
   cursor: pointer;
   position: relative;
-  opacity: 0.68;
+  opacity: 0.58;
+  transform: translateX(2px);
   transition:
     background 150ms cubic-bezier(0.32, 0.72, 0, 1),
     color 150ms cubic-bezier(0.32, 0.72, 0, 1),
@@ -616,13 +853,19 @@ html.mo-hide-cursor *::after {
 .mo-list-action-btn svg {
   width: 12px;
   height: 12px;
+  transition: transform var(--mo-dur-press) var(--mo-ease-standard);
 }
 
 .mo-list-action-btn:hover {
-  background: color-mix(in oklch, var(--mo-fg) 5%, transparent);
+  background: var(--mo-hover);
   color: var(--mo-fg, #0a0a0a);
   transform: translateY(-1px);
   opacity: 1;
+}
+
+.mo-list-action-btn:hover svg,
+.mo-list-action-btn:focus-visible svg {
+  transform: scale(1.04);
 }
 
 .mo-list-action-danger:hover {
@@ -637,41 +880,34 @@ html.mo-hide-cursor *::after {
 .mo-list-badge:focus-visible,
 .mo-list-body:focus-visible,
 .mo-list-action-btn:focus-visible,
+.mo-info-link:focus-visible,
 .mo-compact-btn:focus-visible {
   outline: none;
   box-shadow:
     0 0 0 2px var(--mo-surface, #ffffff),
-    0 0 0 4px color-mix(in oklch, var(--mo-accent, #2563eb) 32%, transparent);
+    0 0 0 4px var(--mo-focus-ring, rgba(37, 99, 235, 0.24));
 }
 
 /* Legacy — kept for install command if re-added */
 .mo-info-install-command {
   all: initial;
-  display: inline-block;
-  padding: 4px 6px;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.03);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: block;
+  padding: 8px 10px;
+  border-radius: var(--mo-radius-sm);
+  background: color-mix(in oklch, var(--mo-fg) 3%, var(--mo-surface-soft));
+  border: 1px solid color-mix(in oklch, var(--mo-line) 84%, transparent);
   color: var(--mo-fg, #0a0a0a);
-  font: 500 9px/1.4 var(--mo-font-mono, "Geist Mono", ui-monospace, monospace);
+  font: 600 10px/1.45 var(--mo-font-mono, ui-monospace, monospace);
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 .mo-info-install-note {
-  all: initial;
-  display: block;
-  font: 500 9px/1.4 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
-  color: var(--mo-fg-secondary, #666666);
+  display: none;
 }
 
 .mo-info-install-list {
-  all: initial;
-  display: grid;
-  gap: 4px;
-  padding-left: 16px;
-  color: var(--mo-fg-secondary, #666666);
-  font: 500 9px/1.4 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
+  display: none;
 }
 
 .mo-info-install-list li {
@@ -681,12 +917,12 @@ html.mo-hide-cursor *::after {
 .mo-info-storage-warning {
   all: initial;
   display: block;
-  padding: 8px;
-  border-radius: 8px;
-  background: rgba(255, 183, 77, 0.16);
-  border: 1px solid rgba(211, 111, 24, 0.35);
-  color: #8f4a08;
-  font: 500 10px/1.4 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
+  padding: 10px 12px;
+  border-radius: var(--mo-radius-sm);
+  background: color-mix(in oklch, oklch(0.8 0.08 70) 18%, var(--mo-surface-raised));
+  border: 1px solid color-mix(in oklch, oklch(0.68 0.11 70) 30%, transparent);
+  color: oklch(0.45 0.07 66);
+  font: 600 10px/1.45 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
 }
 
 /* mo-info-link removed — about section now uses mo-settings-seg-btn */
@@ -805,7 +1041,7 @@ html.mo-hide-cursor *::after {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font: 600 11px/1 "Geist", -apple-system, system-ui, sans-serif;
+  font: 600 11px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   color: #ffffff;
   cursor: inherit;
   position: relative;
@@ -893,10 +1129,11 @@ html.mo-hide-cursor *::after {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font: 600 11px/1 "Geist", -apple-system, system-ui, sans-serif;
+  font: 600 11px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   color: #ffffff;
   position: relative;
   opacity: 0.75;
+  pointer-events: none;
 }
 
 .mo-preview-tail {
@@ -943,20 +1180,20 @@ html.mo-hide-cursor *::after {
   min-width: 200px;
   max-width: 260px;
   padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(16px) saturate(1.5);
-  color: #0a0a0a;
-  font: 400 12px/1.5 "Geist", -apple-system, system-ui, sans-serif;
+  border-radius: var(--mo-radius-md);
+  background: color-mix(in oklch, var(--mo-surface-overlay) 88%, transparent);
+  border: 1px solid color-mix(in oklch, var(--mo-line) 82%, transparent);
+  box-shadow: var(--mo-shadow-sm);
+  backdrop-filter: var(--mo-panel-blur);
+  color: var(--mo-fg, #0a0a0a);
+  font: 500 12px/1.5 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   white-space: pre-wrap;
   opacity: 0;
   transform: translateX(-4px);
   transform-origin: left top;
   pointer-events: none;
-  transition: opacity 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              transform 200ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: opacity var(--mo-dur-press) var(--mo-ease-quick),
+              transform var(--mo-dur-state) var(--mo-ease-standard);
 }
 
 .mo-marker-note.mo-note-open {
@@ -977,28 +1214,28 @@ html.mo-hide-cursor *::after {
   all: initial;
   position: fixed;
   pointer-events: auto;
-  border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(16px) saturate(1.5);
-  color: #0a0a0a;
+  border-radius: var(--mo-radius-md);
+  border: 1px solid color-mix(in oklch, var(--mo-line) 82%, transparent);
+  background: color-mix(in oklch, var(--mo-surface-overlay) 90%, transparent);
+  box-shadow: var(--mo-shadow);
+  backdrop-filter: var(--mo-panel-blur);
+  color: var(--mo-fg, #0a0a0a);
   width: min(320px, calc(100vw - 32px));
   padding: 14px;
-  animation: mo-panel-in 200ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  animation: mo-panel-in var(--mo-dur-state) var(--mo-ease-quick) both;
   transform-origin: top left;
 }
 
 .mo-editor.mo-closing {
-  animation: mo-panel-out 150ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  animation: mo-panel-out var(--mo-dur-press) var(--mo-ease-quick) both;
 }
 
 .mo-editor-title {
   all: initial;
   display: block;
   margin-bottom: 10px;
-  font: 500 11px/1 "Geist", -apple-system, system-ui, sans-serif;
-  color: #999999;
+  font: 600 11px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  color: var(--mo-fg-tertiary, #999999);
 }
 
 .mo-editor textarea,
@@ -1007,29 +1244,34 @@ html.mo-hide-cursor *::after {
   width: 100%;
   min-height: 84px;
   padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background: #ffffff;
-  color: #0a0a0a;
-  font: 400 13px/1.5 "Geist", -apple-system, system-ui, sans-serif;
+  border-radius: var(--mo-radius-sm);
+  border: 1px solid color-mix(in oklch, var(--mo-line-strong) 68%, transparent);
+  background: color-mix(in oklch, var(--mo-surface-raised) 92%, white 8%);
+  color: var(--mo-fg, #0a0a0a);
+  font: 500 13px/1.5 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   resize: vertical;
-  transition: border-color 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              box-shadow 150ms cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  transition: border-color var(--mo-dur-press) var(--mo-ease-quick),
+              box-shadow var(--mo-dur-press) var(--mo-ease-quick),
+              background var(--mo-dur-press) var(--mo-ease-quick);
 }
 
 .mo-editor textarea:focus,
 .mo-toolbar-panel textarea:focus {
   outline: none;
-  border-color: #0a0a0a;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+  border-color: color-mix(in oklch, var(--mo-accent) 24%, var(--mo-line-strong));
+  background: color-mix(in oklch, var(--mo-surface-raised) 82%, white 18%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 0 0 3px var(--mo-focus-ring, rgba(37, 99, 235, 0.24));
 }
 
 .mo-editor-meta {
   all: initial;
   display: block;
   margin: 8px 0 12px;
-  font: 400 12px/1.4 "Geist", -apple-system, system-ui, sans-serif;
-  color: #999999;
+  font: 500 12px/1.45 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  color: var(--mo-fg-secondary, #666666);
 }
 
 .mo-editor-actions {
@@ -1050,22 +1292,26 @@ html.mo-hide-cursor *::after {
 /* Icon buttons (list actions) */
 .mo-icon-btn {
   all: initial;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--mo-radius-xs);
   border: 1px solid transparent;
   background: transparent;
-  color: #666666;
+  color: var(--mo-fg-tertiary, #666666);
   cursor: pointer;
   display: grid;
   place-items: center;
-  transition: background 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              color 150ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform var(--mo-dur-press) var(--mo-ease-standard),
+              background var(--mo-dur-press) var(--mo-ease-quick),
+              color var(--mo-dur-press) var(--mo-ease-quick),
+              border-color var(--mo-dur-press) var(--mo-ease-quick);
 }
 
 .mo-icon-btn:hover {
-  background: color-mix(in oklch, var(--mo-fg) 6%, transparent);
+  background: var(--mo-hover);
+  border-color: color-mix(in oklch, var(--mo-line) 64%, transparent);
   color: var(--mo-fg, #0a0a0a);
+  transform: translateY(-1px);
 }
 
 .mo-icon-btn:active {
@@ -1078,7 +1324,7 @@ html.mo-hide-cursor *::after {
 }
 
 .mo-icon-btn-danger:hover {
-  background: rgba(220, 38, 38, 0.06);
+  background: var(--mo-danger-soft, rgba(220, 38, 38, 0.06));
   color: #b91c1c;
 }
 
@@ -1110,7 +1356,7 @@ html.mo-hide-cursor *::after {
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.06);
   color: #0a0a0a;
-  font: 600 10px/1 "Geist", -apple-system, system-ui, sans-serif;
+  font: 600 10px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   letter-spacing: 0.02em;
   white-space: nowrap;
   user-select: none;
@@ -1159,13 +1405,13 @@ html.mo-hide-cursor *::after {
   pointer-events: auto;
   display: flex;
   flex-direction: column;
-  width: 300px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(16px) saturate(1.5);
-  animation: mo-panel-in 200ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  width: 312px;
+  border-radius: var(--mo-radius-md);
+  background: color-mix(in oklch, var(--mo-surface-overlay) 90%, transparent);
+  border: 1px solid color-mix(in oklch, var(--mo-line) 82%, transparent);
+  box-shadow: var(--mo-shadow);
+  backdrop-filter: var(--mo-panel-blur);
+  animation: mo-panel-in var(--mo-dur-state) var(--mo-ease-quick) both;
   transform-origin: top left;
   overflow: hidden;
   cursor: grab;
@@ -1181,7 +1427,7 @@ html.mo-hide-cursor *::after {
 }
 
 .mo-compact-editor.mo-closing {
-  animation: mo-panel-out 150ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  animation: mo-panel-out var(--mo-dur-press) var(--mo-ease-quick) both;
 }
 
 .mo-compact-input {
@@ -1193,8 +1439,8 @@ html.mo-hide-cursor *::after {
   padding: 12px 14px;
   border: none;
   background: transparent;
-  color: #0a0a0a;
-  font: 400 13px/1.5 "Geist", -apple-system, system-ui, sans-serif;
+  color: var(--mo-fg, #0a0a0a);
+  font: 500 13px/1.5 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   resize: none;
   overflow-y: auto;
   box-sizing: border-box;
@@ -1205,29 +1451,31 @@ html.mo-hide-cursor *::after {
 }
 
 .mo-compact-input::placeholder {
-  color: #999999;
+  color: var(--mo-fg-tertiary, #999999);
 }
 
 .mo-compact-actions {
   all: initial;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 10px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  background: color-mix(in oklch, var(--mo-surface-soft, #ffffff) 80%, transparent);
+  gap: var(--mo-space-2);
+  padding: 10px 12px;
+  border-top: 1px solid color-mix(in oklch, var(--mo-line) 82%, transparent);
+  background: color-mix(in oklch, var(--mo-surface-soft, #ffffff) 90%, transparent);
 }
 
 .mo-compact-btn {
   all: initial;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--mo-radius-sm);
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: background 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              color 150ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform var(--mo-dur-press) var(--mo-ease-standard),
+              background var(--mo-dur-press) var(--mo-ease-quick),
+              color var(--mo-dur-press) var(--mo-ease-quick),
+              box-shadow var(--mo-dur-press) var(--mo-ease-quick);
 }
 
 .mo-compact-btn:active {
@@ -1237,6 +1485,7 @@ html.mo-hide-cursor *::after {
 .mo-compact-btn svg {
   width: 14px;
   height: 14px;
+  transition: transform var(--mo-dur-press) var(--mo-ease-standard);
 }
 
 /* Expand touch target to 44px minimum */
@@ -1252,25 +1501,32 @@ html.mo-hide-cursor *::after {
 }
 
 .mo-compact-cancel {
-  color: #999999;
+  color: var(--mo-fg-tertiary, #999999);
   background: transparent;
 }
 
 .mo-compact-cancel:hover {
   color: #dc2626;
-  background: rgba(220, 38, 38, 0.06);
+  background: var(--mo-danger-soft, rgba(220, 38, 38, 0.06));
 }
 
 .mo-compact-submit {
   margin-left: auto;
   color: #ffffff;
-  background: var(--mo-fg, #0a0a0a);
+  background: color-mix(in oklch, var(--mo-accent) 18%, var(--mo-accent-strong));
+  box-shadow: var(--mo-shadow-xs);
 }
 
 .mo-compact-submit:hover {
   color: var(--mo-accent-strong, #ffffff);
-  background: color-mix(in oklch, var(--mo-accent) 18%, var(--mo-fg));
-  border-radius: 8px;
+  background: color-mix(in oklch, var(--mo-accent) 28%, var(--mo-accent-strong));
+  box-shadow: var(--mo-shadow-sm);
+  transform: translateY(-1px);
+}
+
+.mo-compact-btn:hover svg,
+.mo-compact-btn:focus-visible svg {
+  transform: scale(1.04);
 }
 
 /* ── Thread view (comment list) ─────────────────── */
@@ -1282,7 +1538,7 @@ html.mo-hide-cursor *::after {
   max-height: 200px;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid color-mix(in oklch, var(--mo-line) 82%, transparent);
 }
 
 .mo-thread-comment {
@@ -1294,19 +1550,19 @@ html.mo-hide-cursor *::after {
 }
 
 .mo-thread-comment + .mo-thread-comment {
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid color-mix(in oklch, var(--mo-line) 76%, transparent);
 }
 
 .mo-thread-author {
   all: initial;
-  font: 600 12px/1 "Geist", -apple-system, system-ui, sans-serif;
-  color: #0a0a0a;
+  font: 700 12px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  color: var(--mo-fg, #0a0a0a);
 }
 
 .mo-thread-body {
   all: initial;
-  font: 400 13px/1.5 "Geist", -apple-system, system-ui, sans-serif;
-  color: #666666;
+  font: 500 13px/1.5 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  color: var(--mo-fg-secondary, #666666);
   white-space: pre-wrap;
   word-wrap: break-word;
 }
@@ -1318,13 +1574,17 @@ html.mo-hide-cursor *::after {
   position: fixed;
   width: 28px;
   height: 38px;
-  pointer-events: none;
+  pointer-events: none !important;
   opacity: 1;
   z-index: 2147483647;
   transform: translate(-50%, -100%);
   filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.15));
-  transition: opacity 200ms cubic-bezier(0.32, 0.72, 0, 1),
-              transform 200ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: opacity var(--mo-dur-state) var(--mo-ease-quick),
+              transform var(--mo-dur-state) var(--mo-ease-standard);
+}
+
+.mo-cursor-marker * {
+  pointer-events: none !important;
 }
 
 .mo-cursor-marker .mo-preview-dot {
@@ -1596,7 +1856,7 @@ html.mo-hide-cursor *::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  font: 600 12px/1 "Geist Mono", ui-monospace, monospace;
+  font: 600 12px/1 var(--mo-font-mono, ui-monospace, monospace);
   color: #fff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
@@ -1607,11 +1867,10 @@ html.mo-hide-cursor *::after {
   all: initial;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--mo-space-2);
   padding: 10px 8px;
-  font: 400 10px/1.4 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
+  font: 500 10px/1.4 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   color: var(--mo-fg-tertiary, #999999);
-  font-style: italic;
 }
 
 .mo-list-item {
@@ -1619,15 +1878,20 @@ html.mo-hide-cursor *::after {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
-  gap: 8px;
+  gap: var(--mo-space-2);
   padding: 6px;
-  border-radius: 10px;
-  background: color-mix(in oklch, var(--mo-surface, #ffffff) 72%, transparent);
-  border: 1px solid color-mix(in oklch, var(--mo-fg, #0a0a0a) 5%, transparent);
+  border-radius: var(--mo-radius-md);
+  background: color-mix(in oklch, var(--mo-surface-raised) 88%, transparent);
+  border: 1px solid color-mix(in oklch, var(--mo-line) 80%, transparent);
+  box-shadow: var(--mo-shadow-xs);
   transition:
-    background 150ms cubic-bezier(0.32, 0.72, 0, 1),
-    border-color 150ms cubic-bezier(0.32, 0.72, 0, 1),
-    transform 150ms cubic-bezier(0.32, 0.72, 0, 1);
+    border-color var(--mo-dur-press) var(--mo-ease-quick),
+    box-shadow var(--mo-dur-press) var(--mo-ease-quick),
+    transform var(--mo-dur-press) var(--mo-ease-standard);
+  opacity: 0;
+  transform: translateY(4px);
+  animation: mo-list-item-in 240ms var(--mo-ease-standard) both;
+  animation-delay: calc(var(--mo-list-index, 0) * 18ms);
 }
 
 .mo-list-item + .mo-list-item {
@@ -1635,9 +1899,9 @@ html.mo-hide-cursor *::after {
 }
 
 .mo-list-item:hover {
-  background: color-mix(in oklch, var(--mo-surface, #ffffff) 72%, transparent);
-  border-color: color-mix(in oklch, var(--mo-fg) 8%, transparent);
-  transform: none;
+  border-color: color-mix(in oklch, var(--mo-line-strong) 68%, transparent);
+  box-shadow: var(--mo-shadow-sm);
+  transform: translateY(-1px);
 }
 
 .mo-list-number {
@@ -1647,7 +1911,7 @@ html.mo-hide-cursor *::after {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  font: 600 8px/1 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
+  font: 700 8px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   color: #ffffff;
   background: #171717;
   border: 1.5px solid rgba(255, 255, 255, 0.20);
@@ -1663,25 +1927,27 @@ html.mo-hide-cursor *::after {
   min-width: 0;
   width: 100%;
   padding: 6px 4px;
-  border-radius: 8px;
+  border-radius: var(--mo-radius-sm);
   cursor: pointer;
-  transition: background 150ms cubic-bezier(0.32, 0.72, 0, 1),
-              transform 140ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform var(--mo-dur-press) var(--mo-ease-standard),
+              opacity var(--mo-dur-press) var(--mo-ease-quick);
 }
 
-.mo-list-body:hover {
-  background: transparent;
+.mo-list-item:hover .mo-list-body,
+.mo-list-item:focus-within .mo-list-body {
+  transform: translateX(1px);
 }
 
 .mo-list-item:hover .mo-list-badge,
 .mo-list-item:focus-within .mo-list-badge {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px color-mix(in oklch, var(--mo-fg, #0a0a0a) 10%, transparent);
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 8px 18px color-mix(in oklch, var(--mo-fg, #0a0a0a) 12%, transparent);
 }
 
 .mo-list-item:hover .mo-list-action-btn,
 .mo-list-item:focus-within .mo-list-action-btn {
   opacity: 0.9;
+  transform: translateX(0);
 }
 
 .mo-list-note {
@@ -1690,35 +1956,36 @@ html.mo-hide-cursor *::after {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font: 500 11px/1.35 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
+  font: 600 11px/1.35 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   color: var(--mo-fg, #0a0a0a);
 }
 
 .mo-list-note-empty {
   color: var(--mo-fg-tertiary, #999999);
-  font-style: italic;
 }
 
 .mo-list-meta {
   all: initial;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 4px;
-  font: 500 9px/1 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
-  color: #999999;
+  font: 600 9px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
+  color: var(--mo-fg-tertiary, #999999);
 }
 
 .mo-list-type-pill {
   all: initial;
   display: inline-flex;
   align-items: center;
-  padding: 1px 5px;
+  min-height: 18px;
+  padding: 0 6px;
   border-radius: 999px;
-  font: 500 8px/1 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
+  font: 600 8px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  background: rgba(0, 0, 0, 0.04);
-  color: #999999;
+  letter-spacing: 0.06em;
+  background: color-mix(in oklch, var(--mo-fg) 5%, transparent);
+  color: var(--mo-fg-tertiary, #999999);
 }
 
 .mo-list-type-pill[data-type="element"] {
@@ -1743,22 +2010,9 @@ html.mo-hide-cursor *::after {
 
 .mo-list-time {
   all: initial;
-  font: 500 9px/1 var(--mo-font-ui, "Geist", -apple-system, system-ui, sans-serif);
+  font: 600 9px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   color: var(--mo-fg-tertiary, #bbbbbb);
   font-variant-numeric: tabular-nums;
-}
-
-.mo-list-actions {
-  all: initial;
-  display: flex;
-  gap: 2px;
-  flex-shrink: 0;
-  opacity: 0;
-  transition: opacity 150ms cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-.mo-list-item:hover .mo-list-actions {
-  opacity: 1;
 }
 
 .mo-pill {
@@ -1768,7 +2022,7 @@ html.mo-hide-cursor *::after {
   gap: 4px;
   border-radius: 999px;
   padding: 3px 8px;
-  font: 500 10px/1 "Geist", -apple-system, system-ui, sans-serif;
+  font: 500 10px/1 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   background: rgba(0, 0, 0, 0.04);
   color: #666666;
 }
@@ -1777,7 +2031,7 @@ html.mo-hide-cursor *::after {
   all: initial;
   display: block;
   margin-top: 4px;
-  font: 400 11px/1.35 "Geist", -apple-system, system-ui, sans-serif;
+  font: 400 11px/1.35 var(--mo-font-ui, -apple-system, system-ui, sans-serif);
   color: #999999;
 }
 
@@ -1845,9 +2099,19 @@ html.mo-hide-cursor *::after {
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+@keyframes mo-toolbar-panel-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @keyframes mo-panel-out {
   from { opacity: 1; transform: scale(1) translateY(0); }
   to { opacity: 0; transform: scale(0.96) translateY(4px); }
+}
+
+@keyframes mo-list-item-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes mo-puff-out {
@@ -1948,7 +2212,6 @@ html.mo-hide-cursor *::after {
 /* ── Theme Overrides ────────────────────────────── */
 
 .mo-toolbar,
-.mo-toolbar-panel,
 .mo-compact-editor,
 .mo-marker-note {
   background: color-mix(in oklch, var(--mo-surface) 90%, transparent);
@@ -1991,7 +2254,9 @@ html.mo-hide-cursor *::after {
 
 .mo-panel-title,
 .mo-settings-label,
-.mo-list-type-pill {
+.mo-settings-sublabel,
+.mo-list-type-pill,
+.mo-info-install-title {
   font-size: var(--mo-text-kicker-size);
   line-height: var(--mo-text-kicker-line);
   font-weight: var(--mo-weight-strong);
@@ -2004,20 +2269,23 @@ html.mo-hide-cursor *::after {
   font-size: var(--mo-text-kicker-size);
   line-height: var(--mo-text-kicker-line);
   font-weight: var(--mo-weight-medium);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--mo-text-kicker-track);
   text-transform: uppercase;
 }
 
 .mo-collapse-btn,
 .mo-settings-seg-btn,
 .mo-settings-toggle,
+.mo-info-link,
+.mo-info-version,
 .mo-thread-author,
 .mo-list-number,
 .mo-list-meta,
 .mo-list-time,
 .mo-pill,
 .mo-undo-toast,
-.mo-undo-btn {
+.mo-undo-btn,
+.mo-compact-label {
   font-size: var(--mo-text-meta-size);
   line-height: var(--mo-text-meta-line);
 }
@@ -2038,6 +2306,16 @@ html.mo-hide-cursor *::after {
   line-height: var(--mo-text-meta-line);
 }
 
+.mo-info-name,
+.mo-list-note,
+.mo-marker-note strong,
+.mo-thread-author {
+  font-size: var(--mo-text-title-size);
+  line-height: var(--mo-text-title-line);
+  font-weight: var(--mo-weight-strong);
+  letter-spacing: -0.01em;
+}
+
 .mo-floating-drag-dot {
   font-family: var(--mo-font-mono);
   font-size: var(--mo-text-code-size);
@@ -2054,7 +2332,9 @@ html.mo-hide-cursor *::after {
 }
 
 .mo-panel-title,
-.mo-settings-label {
+.mo-settings-label,
+.mo-settings-sublabel,
+.mo-info-install-title {
   color: var(--mo-fg-tertiary);
 }
 
@@ -2077,7 +2357,7 @@ html.mo-hide-cursor *::after {
 
 .mo-toolbar-btn {
   border-color: var(--mo-line);
-  background: color-mix(in oklch, var(--mo-surface) 82%, transparent);
+  background: color-mix(in oklch, var(--mo-surface-raised) 92%, transparent);
 }
 
 .mo-icon-btn {
@@ -2090,33 +2370,26 @@ html.mo-hide-cursor *::after {
 .mo-collapse-btn:hover,
 .mo-toolbar-btn:hover {
   transform: translateY(-1px);
-  background: color-mix(in oklch, var(--mo-fg) 5%, var(--mo-surface));
+  background: color-mix(in oklch, var(--mo-surface-raised) 76%, white 24%);
   color: var(--mo-fg);
 }
 
 .mo-icon-btn:hover {
-  background: color-mix(in oklch, var(--mo-fg) 6%, transparent);
+  background: var(--mo-hover);
   color: var(--mo-fg);
 }
 
 .mo-toolbar-btn[data-active="true"] {
-  background: color-mix(in oklch, var(--mo-accent) 16%, var(--mo-surface));
-  border-color: color-mix(in oklch, var(--mo-accent) 28%, var(--mo-line));
-  color: var(--mo-accent-strong);
-  box-shadow: none;
+  background: color-mix(in oklch, var(--mo-accent) 18%, var(--mo-accent-strong));
+  border-color: color-mix(in oklch, var(--mo-accent) 42%, var(--mo-accent-strong));
+  color: oklch(0.98 0.003 250);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--mo-accent) 18%, transparent);
   position: relative;
   overflow: hidden;
 }
 
 .mo-toolbar-btn[data-active="true"]::after {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in oklch, var(--mo-accent) 28%, transparent);
-  opacity: 0.75;
-  animation: mo-soft-pulse 1.9s ease-out infinite;
-  pointer-events: none;
+  display: none;
 }
 
 /* settings-group/toggle overrides removed — tokens are in base rules */
@@ -2204,7 +2477,7 @@ html.mo-hide-cursor *::after {
 
 .mo-compact-submit:hover {
   color: var(--mo-accent-strong);
-  background: color-mix(in oklch, var(--mo-accent) 14%, var(--mo-surface));
+  background: color-mix(in oklch, var(--mo-accent) 28%, var(--mo-accent-strong));
 }
 
 .mo-compact-cancel:hover,
@@ -2214,7 +2487,7 @@ html.mo-hide-cursor *::after {
 }
 
 .mo-list-item:hover {
-  background: color-mix(in oklch, var(--mo-surface, #ffffff) 72%, transparent);
+  background: color-mix(in oklch, var(--mo-surface-raised) 88%, transparent);
 }
 
 .mo-list-note {
@@ -2250,6 +2523,7 @@ html.mo-hide-cursor *::after {
 
 @media (prefers-reduced-motion: reduce) {
   .mo-toolbar,
+  .mo-toolbar-panel,
   .mo-marker-pin,
   .mo-puff-out .mo-marker-pin,
   .mo-editor,
@@ -2268,8 +2542,12 @@ html.mo-hide-cursor *::after {
 
   .mo-toolbar-btn,
   .mo-collapse-btn,
+  .mo-collapse-logo,
   .mo-icon-btn,
+  .mo-list-action-btn svg,
   .mo-compact-btn,
+  .mo-compact-btn svg,
+  .mo-toolbar-btn svg,
   .mo-marker-pin button,
   .mo-marker-note,
   .mo-highlight-box,
@@ -2287,6 +2565,7 @@ html.mo-hide-cursor *::after {
   .mo-settings-toggle input[type="checkbox"],
   .mo-settings-toggle input[type="checkbox"]::after,
   .mo-list-item,
+  .mo-list-body,
   .mo-list-actions,
   .mo-undo-btn,
   .mo-toolbar.mo-collapsed-idle,

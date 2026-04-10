@@ -71,6 +71,32 @@ function makeSkillInstallButton(target: { label: string; docsUrl?: string }): HT
   return button;
 }
 
+function toggleToolbarCollapsed(toolbar: HTMLElement, shouldCollapse: boolean): void {
+  const rect = toolbar.getBoundingClientRect();
+  const rightOffset = window.innerWidth - rect.right;
+  const topOffset = rect.top;
+
+  toolbar.classList.toggle("mo-collapsed", shouldCollapse);
+
+  window.requestAnimationFrame(() => {
+    const nextRect = toolbar.getBoundingClientRect();
+    const nextLeft = clamp(
+      window.innerWidth - rightOffset - nextRect.width,
+      8,
+      Math.max(8, window.innerWidth - nextRect.width - 8)
+    );
+    const nextTop = clamp(
+      topOffset,
+      8,
+      Math.max(8, window.innerHeight - nextRect.height - 8)
+    );
+
+    toolbar.style.right = "auto";
+    toolbar.style.left = `${nextLeft}px`;
+    toolbar.style.top = `${nextTop}px`;
+  });
+}
+
 export function ensureUi(): void {
   if (refs.root?.isConnected) {
     return;
@@ -151,7 +177,7 @@ export function ensureUi(): void {
 
       if (!toolbarDrag?.moved) {
         state.toolbarCollapsed = !state.toolbarCollapsed;
-        toolbar.classList.toggle("mo-collapsed", state.toolbarCollapsed);
+        toggleToolbarCollapsed(toolbar, state.toolbarCollapsed);
         if (state.toolbarCollapsed) startCollapsedFade(toolbar);
         else stopCollapsedFade(toolbar);
       }
@@ -172,6 +198,7 @@ export function ensureUi(): void {
   });
 
   const seg1 = makeSegment();
+  seg1.classList.add("mo-toolbar-segment-annotate");
   const freeBtn = makeIconButton("Free marker", ICON.free, () => setPlacementMode("free"));
   freeBtn.dataset.role = "free";
   const elemBtn = makeIconButton("Element marker", ICON.element, () => setPlacementMode("element"));
@@ -221,9 +248,12 @@ export function ensureUi(): void {
   seg1.append(freeBtn, elemBtn, highlightBtn, drawBtn);
 
   const seg2 = makeSegment();
+  seg2.classList.add("mo-toolbar-segment-utility");
   const listBtn = makeIconButton("Annotations list", ICON.list, () => _toggleToolbarPanel("list"));
   listBtn.dataset.role = "list";
+  listBtn.setAttribute("aria-pressed", "false");
   const copyBtn = makeIconButton("Copy annotations", ICON.copy, () => copyAnnotationsToClipboard());
+  copyBtn.classList.add("mo-toolbar-btn-quiet");
 
   let wipeConfirmTimer: ReturnType<typeof setTimeout> | null = null;
   const wipeBtn = makeIconButton("Wipe all annotations", ICON.sponge, () => {
@@ -247,11 +277,14 @@ export function ensureUi(): void {
     }, 3000);
   });
   wipeBtn.dataset.role = "wipe";
+  wipeBtn.classList.add("mo-toolbar-btn-danger");
   seg2.append(listBtn, copyBtn, wipeBtn);
 
   const seg3 = makeSegment();
+  seg3.classList.add("mo-toolbar-segment-system");
   const settingsBtn = makeIconButton("Settings", ICON.settings, () => _toggleToolbarPanel("settings"));
   settingsBtn.dataset.role = "settings";
+  settingsBtn.setAttribute("aria-pressed", "false");
   const hideBtn = makeIconButton("Hide overlay", ICON.hide, () => {
     state.mode = "idle";
     state.placementMode = null;
@@ -263,6 +296,7 @@ export function ensureUi(): void {
     closeToolbarPanel();
     render();
   });
+  hideBtn.classList.add("mo-toolbar-btn-quiet");
   seg3.append(settingsBtn, hideBtn);
 
   const toolbarRow = document.createElement("div");
@@ -298,7 +332,9 @@ export function ensureUi(): void {
 export function makeIconButton(title: string, svgHtml: string, onClick: () => void): HTMLButtonElement {
   const btn = document.createElement("button");
   btn.className = "mo-toolbar-btn";
+  btn.type = "button";
   btn.title = title;
+  btn.setAttribute("aria-label", title);
   btn.innerHTML = svgHtml;
   btn.addEventListener("click", (e) => {
     e.preventDefault();
@@ -637,8 +673,14 @@ export function renderToolbarPanel(): void {
 
   const listBtn = refs.root?.querySelector('[data-role="list"]') as HTMLElement | null;
   const settingsBtn = refs.root?.querySelector('[data-role="settings"]') as HTMLElement | null;
-  if (listBtn) listBtn.dataset.active = String(state.expandedPanel === "list");
-  if (settingsBtn) settingsBtn.dataset.active = String(state.expandedPanel === "settings");
+  if (listBtn) {
+    listBtn.dataset.active = String(state.expandedPanel === "list");
+    listBtn.setAttribute("aria-pressed", String(state.expandedPanel === "list"));
+  }
+  if (settingsBtn) {
+    settingsBtn.dataset.active = String(state.expandedPanel === "settings");
+    settingsBtn.setAttribute("aria-pressed", String(state.expandedPanel === "settings"));
+  }
 
   if (!state.expandedPanel || !refs.toolbar) return;
 
@@ -659,11 +701,6 @@ export function renderToolbarPanel(): void {
 }
 
 export function renderListPanelContent(panel: HTMLElement): void {
-  const title = document.createElement("strong");
-  title.className = "mo-panel-title";
-  title.textContent = "Annotations";
-  panel.appendChild(title);
-
   const numbered = getNumberedAnnotations();
 
   if (!numbered.length) {
@@ -672,18 +709,15 @@ export function renderListPanelContent(panel: HTMLElement): void {
     empty.textContent = "No numbered annotations yet.";
     panel.appendChild(empty);
   } else {
-    for (const annotation of numbered) {
-      panel.appendChild(makeListItem(annotation));
-    }
+    numbered.forEach((annotation, index) => {
+      const item = makeListItem(annotation);
+      item.style.setProperty("--mo-list-index", String(Math.min(index, 5)));
+      panel.appendChild(item);
+    });
   }
 }
 
 export function renderSettingsPanelContent(panel: HTMLElement): void {
-  const title = document.createElement("strong");
-  title.className = "mo-panel-title";
-  title.textContent = "Settings";
-  panel.appendChild(title);
-
   /* ── Markers group ─────────────────────── */
   const markersGroup = document.createElement("div");
   markersGroup.className = "mo-settings-group";
@@ -703,8 +737,10 @@ export function renderSettingsPanelContent(panel: HTMLElement): void {
   for (const mode of modes) {
     const btn = document.createElement("button");
     btn.className = "mo-settings-seg-btn";
+    btn.type = "button";
     btn.textContent = mode.label;
     btn.dataset.active = String(state.settings.attachmentMode === mode.value);
+    btn.setAttribute("aria-pressed", String(state.settings.attachmentMode === mode.value));
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -756,7 +792,7 @@ export function renderSettingsPanelContent(panel: HTMLElement): void {
   const manifest = chrome.runtime.getManifest();
   const infoVersion = document.createElement("span");
   infoVersion.className = "mo-info-version";
-  infoVersion.textContent = `v${manifest.version}`;
+  infoVersion.textContent = `v${manifest.version_name || manifest.version}`;
 
   infoText.append(infoName, infoVersion);
   infoRow.appendChild(infoText);
@@ -895,8 +931,10 @@ export function makeListItem(annotation: any): HTMLElement {
     await deleteAnnotation(annotation.id);
     render();
   });
-  deleteBtn.classList.add("mo-icon-btn-danger");
+  deleteBtn.classList.add("mo-icon-btn-danger", "mo-list-action-danger");
   deleteBtn.title = "Delete";
+  deleteBtn.setAttribute("aria-label", "Delete");
+  copyBtn.setAttribute("aria-label", "Copy annotation");
 
   item.append(numberBadge, body, copyBtn, deleteBtn);
   return item;
@@ -905,6 +943,7 @@ export function makeListItem(annotation: any): HTMLElement {
 export function makeListIconButton(svgHtml: string, onClick: () => void): HTMLButtonElement {
   const btn = document.createElement("button");
   btn.className = "mo-icon-btn mo-list-action-btn";
+  btn.type = "button";
   btn.innerHTML = svgHtml;
   btn.addEventListener("click", (event) => {
     event.preventDefault();
