@@ -1,0 +1,101 @@
+name: publish-skill-pack
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - SKILL.md
+      - scripts/build-skill-pack.cjs
+      - .github/workflows/publish-skill-pack.yml
+  release:
+    types:
+      - published
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build skill bundles
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            node scripts/build-skill-pack.cjs --dist
+          else
+            node scripts/build-skill-pack.cjs --root --dist
+          fi
+
+      - name: Compute bundle version label
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "value=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=main-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Package universal skill bundle
+        run: |
+          mkdir -p artifacts
+          asset_root="missouri-skills-universal-${{ steps.version.outputs.value }}"
+          stage_dir="artifacts/$asset_root"
+          mkdir -p "$stage_dir"
+          cp -R dist/skills/universal/. "$stage_dir/"
+          cd artifacts
+          zip -r "${asset_root}.zip" "$asset_root"
+          sha256sum "missouri-skills-universal-${{ steps.version.outputs.value }}.zip" > "missouri-skills-universal-${{ steps.version.outputs.value }}.zip.sha256"
+
+      - name: Upload skill bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: missouri-skills-universal-${{ steps.version.outputs.value }}
+          path: |
+            dist/skills/manifest.json
+            artifacts/missouri-skills-universal-${{ steps.version.outputs.value }}.zip
+            artifacts/missouri-skills-universal-${{ steps.version.outputs.value }}.zip.sha256
+
+      - name: Commit generated repo skill bundles
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            .agents/skills/missouri \
+            .claude/skills/missouri \
+            .cursor/skills/missouri \
+            .gemini/skills/missouri \
+            .github/skills/missouri \
+            .kiro/skills/missouri \
+            .opencode/skills/missouri \
+            .pi/skills/missouri \
+            .trae/skills/missouri \
+            .trae-cn/skills/missouri
+          if git diff --cached --quiet; then
+            echo "No generated skill changes to commit"
+            exit 0
+          fi
+          git commit -m "chore(skills): sync generated skill bundles"
+          git push
+
+      - name: Attach universal skill bundle to GitHub release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/missouri-skills-universal-${{ steps.version.outputs.value }}.zip
+            artifacts/missouri-skills-universal-${{ steps.version.outputs.value }}.zip.sha256

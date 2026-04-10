@@ -1,0 +1,97 @@
+name: release-extension
+
+on:
+  workflow_dispatch:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: extension/package-lock.json
+
+      - name: Install extension dependencies
+        working-directory: extension
+        run: npm ci
+
+      - name: Validate extension versions
+        id: version
+        working-directory: extension
+        run: |
+          manifest_version=$(node -p "require('./manifest.json').version")
+          package_version=$(node -p "require('./package.json').version")
+          if [ "$manifest_version" != "$package_version" ]; then
+            echo "manifest.json version ($manifest_version) does not match package.json version ($package_version)"
+            exit 1
+          fi
+          if [ "${{ github.event_name }}" = "release" ]; then
+            release_tag="${GITHUB_REF_NAME#v}"
+            if [ "$manifest_version" != "$release_tag" ]; then
+              echo "Release tag ($GITHUB_REF_NAME) does not match extension version ($manifest_version)"
+              exit 1
+            fi
+          fi
+          echo "value=$manifest_version" >> "$GITHUB_OUTPUT"
+
+      - name: Run extension checks
+        working-directory: extension
+        run: |
+          npm run typecheck
+          npm test
+
+      - name: Build extension bundle
+        working-directory: extension
+        run: npm run build
+
+      - name: Create extension release archive
+        run: |
+          mkdir -p artifacts
+          asset_root="missouri-extension-v${{ steps.version.outputs.value }}"
+          stage_dir="artifacts/$asset_root"
+          mkdir -p "$stage_dir"
+          cp -R extension/dist/. "$stage_dir/"
+          cat <<'EOF' > "$stage_dir/README.txt"
+          Missouri extension release package
+
+          Install:
+          1. Download and unzip this release asset.
+          2. Open chrome://extensions in Chrome or Chromium.
+          3. Enable Developer mode.
+          4. Click "Load unpacked".
+          5. Select the unzipped folder from this archive.
+
+          Notes:
+          - Direct one-click installation on Windows and macOS requires a Chrome Web Store listing.
+          - Keyboard shortcuts are documented in the main README.
+          EOF
+          cd artifacts
+          zip -r "${asset_root}.zip" "$asset_root"
+          sha256sum "missouri-extension-v${{ steps.version.outputs.value }}.zip" > "missouri-extension-v${{ steps.version.outputs.value }}.zip.sha256"
+
+      - name: Upload packaged extension artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: missouri-extension-v${{ steps.version.outputs.value }}
+          path: artifacts/missouri-extension-v${{ steps.version.outputs.value }}.zip*
+
+      - name: Attach extension archive to GitHub release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/missouri-extension-v${{ steps.version.outputs.value }}.zip
+            artifacts/missouri-extension-v${{ steps.version.outputs.value }}.zip.sha256

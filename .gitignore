@@ -1,0 +1,39 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Environment / secrets
+.env
+.env.*
+.venv/
+
+# Local agent-client install outputs and machine-specific settings
+.codex
+.claude/
+.gemini/settings.json
+.cursor/
+.gemini/skills/
+.kiro/
+.opencode/
+.pi/
+.trae/
+.trae-cn/
+.playwright-mcp/
+
+# Root build artifacts
+node_modules/
+dist/
+coverage/
+*.log
+*.tsbuildinfo
+
+# Chrome extension build / tooling artifacts
+extension/node_modules/
+extension/dist/
+extension/test-results/
+extension/playwright-report/
+extension/coverage/
+extension/.cache/
+extension/*.tsbuildinfo

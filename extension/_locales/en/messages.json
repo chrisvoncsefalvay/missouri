@@ -1,0 +1,20 @@
+{
+  "extName": {
+    "message": "Missouri"
+  },
+  "extDescription": {
+    "message": "Show me! A new way to interact with coding agents... and for them to interact with you."
+  },
+  "actionTitle": {
+    "message": "Missouri"
+  },
+  "commandToggleAnnotationMode": {
+    "message": "Toggle annotation mode on the current page"
+  },
+  "commandToggleOverlayVisibility": {
+    "message": "Show or hide the annotation overlay"
+  },
+  "commandToggleHighlightMode": {
+    "message": "Toggle text highlight mode"
+  }
+}

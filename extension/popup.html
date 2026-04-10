@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Missouri</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="popup-shell">
+      <header class="popup-header">
+        <div class="brand-lockup">
+          <button class="brand-mark" id="brand-mark" type="button" aria-label="Missouri field notes">
+            <img class="brand-mark-image" src="icons/logo-64.png" alt="" aria-hidden="true">
+          </button>
+          <div class="brand-copy">
+            <h1>Missouri</h1>
+          </div>
+        </div>
+        <p class="lede">Helping humans and agents share web context.</p>
+      </header>
+
+      <section class="page-stage" aria-label="Current page">
+        <div class="page-stage-main">
+          <p class="card-label">Current page</p>
+          <h2 id="page-title">Loading...</h2>
+          <p class="page-url" id="page-url"></p>
+        </div>
+        <div class="state-cluster" aria-label="Page state">
+          <span class="state-chip" id="mode-chip" data-state="idle">Passive</span>
+          <span class="state-chip subtle" id="theme-chip" data-state="light">Light page</span>
+        </div>
+      </section>
+
+      <section class="summary-grid" aria-label="Annotation summary">
+        <article class="summary-tile">
+          <span class="summary-label">All marks</span>
+          <strong class="summary-value" id="annotation-count">0</strong>
+        </article>
+        <article class="summary-tile">
+          <span class="summary-label">Anchored</span>
+          <strong class="summary-value" id="element-count">0</strong>
+        </article>
+        <article class="summary-tile">
+          <span class="summary-label">Free pins</span>
+          <strong class="summary-value" id="free-count">0</strong>
+        </article>
+        <article class="summary-tile">
+          <span class="summary-label">Review marks</span>
+          <strong class="summary-value" id="review-count">0</strong>
+        </article>
+      </section>
+
+      <section class="popup-actions" aria-label="Controls">
+        <button class="action-button primary" id="toggle-mode">Enter annotation mode</button>
+        <div class="action-row">
+          <button class="action-button secondary" id="start-highlight">Highlight review</button>
+          <button class="action-button tertiary" id="toggle-overlay">Hide overlay</button>
+        </div>
+        <p class="hint"><code>Ctrl/Cmd+Shift+M</code> mode &middot; <code>Ctrl/Cmd+Shift+H</code> overlay &middot; <code>Ctrl/Cmd+Shift+W</code> highlight</p>
+        <p class="status-whisper" id="status-whisper" aria-live="polite">Loading page context…</p>
+      </section>
+
+      <section class="annotation-section" aria-label="Annotations">
+        <div class="section-header">
+          <p class="card-label">Current annotations</p>
+          <span class="section-meta" id="list-summary">Loading...</span>
+        </div>
+        <div id="annotation-list" class="annotation-list"></div>
+      </section>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
