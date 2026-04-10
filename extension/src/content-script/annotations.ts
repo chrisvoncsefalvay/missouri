@@ -261,8 +261,8 @@ export async function loadSettings(): Promise<void> {
     const stored = await chrome.storage.local.get("mo_settings");
     if (stored.mo_settings) {
       state.settings = { ...state.settings, ...stored.mo_settings };
-      state.overlayVisible = state.settings.overlayVisible;
     }
+    state.overlayVisible = state.settings.overlayVisible;
     markStorageHealthy();
   } catch (error) {
     if (!isRecoverableStorageError(error)) {
@@ -273,6 +273,7 @@ export async function loadSettings(): Promise<void> {
 }
 
 export async function saveSettings(): Promise<void> {
+  state.settings.overlayVisible = state.overlayVisible;
   try {
     await chrome.storage.local.set({ mo_settings: state.settings });
     markStorageHealthy();

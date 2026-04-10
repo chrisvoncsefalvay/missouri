@@ -2,7 +2,7 @@ import { state } from "./state";
 import { getPageKey, getPageUrl } from "./utils";
 import { render, renderMarkers, hideHighlight } from "./markers";
 import { ensureUi, closeEditor, closeToolbarPanel } from "./ui";
-import { loadAnnotations, loadSettings, upsertAnnotationFromPopup, deleteAnnotation } from "./annotations";
+import { loadAnnotations, loadSettings, upsertAnnotationFromPopup, deleteAnnotation, saveSettings } from "./annotations";
 import { handleKeydown, handlePointerMove, handlePageClick, handleMouseDown, handleMouseDrag, handleMouseUp, handleContextMenu, toggleMode, setPlacementMode, focusAnnotation, getPublicState } from "./interaction";
 import { mcpCreateAnnotation, mcpGetAnnotationBounds, mcpHighlightElement } from "./mcp";
 
@@ -75,6 +75,7 @@ async function handleRuntimeMessage(message: any): Promise<any> {
       return { ok: true, state: getPublicState() };
     case "TOGGLE_OVERLAY":
       state.overlayVisible = !state.overlayVisible;
+      state.settings.overlayVisible = state.overlayVisible;
       if (!state.overlayVisible) {
         state.mode = "idle";
         state.placementMode = null;
@@ -82,6 +83,7 @@ async function handleRuntimeMessage(message: any): Promise<any> {
         hideHighlight();
         closeToolbarPanel();
       }
+      await saveSettings();
       render();
       return { ok: true, state: getPublicState() };
     case "GET_STATE":
@@ -95,6 +97,8 @@ async function handleRuntimeMessage(message: any): Promise<any> {
       return { ok: true, state: getPublicState() };
     case "SET_OVERLAY_VISIBILITY":
       state.overlayVisible = Boolean(message.visible);
+      state.settings.overlayVisible = state.overlayVisible;
+      await saveSettings();
       render();
       return { ok: true, state: getPublicState() };
     case "SAVE_ANNOTATION":

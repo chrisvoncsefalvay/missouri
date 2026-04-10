@@ -273,8 +273,8 @@ async function handleMcpCommand(request: any): Promise<void> {
 
 // ── Command implementations ──────────────────────────────────────────────────
 
-async function getActiveTab(): Promise<chrome.tabs.Tab | null> {
-  return getActiveTabWithOptions();
+async function getActiveTab(options: ActiveTabOptions = {}): Promise<chrome.tabs.Tab | null> {
+  return getActiveTabWithOptions(options);
 }
 
 function normalizeTabUrl(url: string | undefined): string | null {

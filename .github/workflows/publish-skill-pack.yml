@@ -74,7 +74,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
+          # Generated skill bundles live inside otherwise ignored harness dirs.
+          git add -f \
             .agents/skills/missouri \
             .claude/skills/missouri \
             .cursor/skills/missouri \

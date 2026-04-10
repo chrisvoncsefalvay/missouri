@@ -258,6 +258,7 @@ export function resolveTheme(mode: ThemeMode): PageTheme {
     case "system": return page;
     case "system-inverse": return page === "dark" ? "light" : "dark";
   }
+  return page;
 }
 
 function parseCssColor(value: string): { r: number; g: number; b: number; a: number } | null {

@@ -4,6 +4,8 @@ export interface MarkerColor {
   tail: string;
 }
 
+export type ThemeMode = "light" | "dark" | "system" | "system-inverse";
+
 export interface Position {
   pageX: number;
   pageY: number;
@@ -51,6 +53,8 @@ export interface Annotation {
 export interface Settings {
   attachmentMode: "point" | "orthogonal" | "leadline";
   colorblindMode: boolean;
+  themeMode: ThemeMode;
+  overlayVisible: boolean;
   mcpEnabled: boolean;
   mcpPort: number;
 }
@@ -106,7 +110,7 @@ export interface DragState {
   anchorPageX: number;
   anchorPageY: number;
   moved: boolean;
-  liveLine?: HTMLElement[] | null;
+  liveLine?: Element[] | null;
   floatingDot?: HTMLElement | null;
 }
 

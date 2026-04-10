@@ -256,6 +256,8 @@ export function ensureUi(): void {
     state.mode = "idle";
     state.placementMode = null;
     state.overlayVisible = false;
+    state.settings.overlayVisible = false;
+    saveSettings();
     closeEditor();
     hideHighlight();
     closeToolbarPanel();
@@ -642,6 +644,10 @@ export function renderToolbarPanel(): void {
 
   const panel = document.createElement("div");
   panel.className = "mo-toolbar-panel";
+  const toolbarRow = refs.toolbar.querySelector(".mo-toolbar-row") as HTMLElement | null;
+  if (toolbarRow && toolbarRow.offsetWidth > 0) {
+    panel.style.maxWidth = `${toolbarRow.offsetWidth}px`;
+  }
 
   if (state.expandedPanel === "list") {
     renderListPanelContent(panel);
@@ -1074,13 +1080,22 @@ export function makeListItem(annotation: any): HTMLElement {
   item.className = "mo-list-item";
 
   const numberBadge = document.createElement("span");
-  numberBadge.className = "mo-list-number";
+  numberBadge.className = "mo-list-number mo-list-badge";
   const color = MARKER_COLORS[annotation.colorIndex % MARKER_COLORS.length];
   numberBadge.style.background = color.fill;
   numberBadge.textContent = annotation.label || markerDisplayLabel(annotation.id) || "?";
 
   const body = document.createElement("div");
   body.className = "mo-list-body";
+  body.title = "Focus annotation";
+  body.tabIndex = 0;
+  body.addEventListener("click", () => focusAnnotation(annotation.id));
+  body.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      focusAnnotation(annotation.id);
+    }
+  });
 
   const notePreview = document.createElement("span");
   notePreview.className = "mo-list-note";
@@ -1116,12 +1131,6 @@ export function makeListItem(annotation: any): HTMLElement {
   }
 
   body.appendChild(meta);
-
-  const actions = document.createElement("div");
-  actions.className = "mo-list-actions";
-
-  const focusBtn = makeListIconButton(ICON.focus, () => focusAnnotation(annotation.id));
-  focusBtn.title = "Focus";
   const copyBtn = makeListIconButton(ICON.copy, () => {
     copySingleAnnotation(annotation);
   });
@@ -1133,15 +1142,13 @@ export function makeListItem(annotation: any): HTMLElement {
   deleteBtn.classList.add("mo-icon-btn-danger");
   deleteBtn.title = "Delete";
 
-  actions.append(focusBtn, copyBtn, deleteBtn);
-
-  item.append(numberBadge, body, actions);
+  item.append(numberBadge, body, copyBtn, deleteBtn);
   return item;
 }
 
 export function makeListIconButton(svgHtml: string, onClick: () => void): HTMLButtonElement {
   const btn = document.createElement("button");
-  btn.className = "mo-icon-btn";
+  btn.className = "mo-icon-btn mo-list-action-btn";
   btn.innerHTML = svgHtml;
   btn.addEventListener("click", (event) => {
     event.preventDefault();

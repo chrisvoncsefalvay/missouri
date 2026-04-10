@@ -38,12 +38,41 @@ export const ICON: Record<string, string> = {
   focus: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12h4M18 12h4M12 2v4M12 18v4"/></svg>'
 };
 
-export const MARKER_COLORS: MarkerColor[] = [
+export const MARKER_COLORS_LIGHT: MarkerColor[] = [
   { fill: "#1c2735", border: "rgba(255, 255, 255, 0.22)", tail: "#1c2735" },
   { fill: "#2667d9", border: "rgba(255, 255, 255, 0.22)", tail: "#2667d9" },
   { fill: "#b5781f", border: "rgba(255, 255, 255, 0.22)", tail: "#b5781f" },
   { fill: "#7b56c9", border: "rgba(255, 255, 255, 0.22)", tail: "#7b56c9" }
 ];
+
+export const MARKER_COLORS_DARK: MarkerColor[] = [
+  { fill: "#dbeafe", border: "rgba(15, 23, 42, 0.34)", tail: "#dbeafe" },
+  { fill: "#60a5fa", border: "rgba(15, 23, 42, 0.34)", tail: "#60a5fa" },
+  { fill: "#fbbf24", border: "rgba(15, 23, 42, 0.34)", tail: "#fbbf24" },
+  { fill: "#c4b5fd", border: "rgba(15, 23, 42, 0.34)", tail: "#c4b5fd" }
+];
+
+export const MARKER_COLORS = MARKER_COLORS_LIGHT;
+
+function prefersDarkTheme(): boolean {
+  return typeof window !== "undefined"
+    && typeof window.matchMedia === "function"
+    && window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+export function getActiveMarkerColors(): MarkerColor[] {
+  switch (state.settings.themeMode) {
+    case "light":
+      return MARKER_COLORS_LIGHT;
+    case "dark":
+      return MARKER_COLORS_DARK;
+    case "system-inverse":
+      return prefersDarkTheme() ? MARKER_COLORS_LIGHT : MARKER_COLORS_DARK;
+    case "system":
+    default:
+      return prefersDarkTheme() ? MARKER_COLORS_DARK : MARKER_COLORS_LIGHT;
+  }
+}
 
 export const state: State = {
   pageKey: getPageKey(location.href),
@@ -73,6 +102,8 @@ export const state: State = {
   settings: {
     attachmentMode: "point",
     colorblindMode: false,
+    themeMode: "system",
+    overlayVisible: true,
     mcpEnabled: false,
     mcpPort: 18462
   }
