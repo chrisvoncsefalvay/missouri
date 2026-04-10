@@ -55,8 +55,6 @@ export interface Settings {
   colorblindMode: boolean;
   themeMode: ThemeMode;
   overlayVisible: boolean;
-  mcpEnabled: boolean;
-  mcpPort: number;
 }
 
 export interface State {
@@ -64,7 +62,6 @@ export interface State {
   pageUrl: string;
   annotations: Annotation[];
   storageDegraded: boolean;
-  mcpConnected: boolean | null;
   mode: "idle" | "annotate";
   placementMode: string | null;
   overlayVisible: boolean;

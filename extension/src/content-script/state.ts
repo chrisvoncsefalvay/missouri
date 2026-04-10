@@ -1,4 +1,4 @@
-import type { State, Refs, MarkerColor } from "./types";
+import type { State, Refs, MarkerColor, Settings } from "./types";
 import { getPageKey, getPageUrl } from "./utils";
 
 export const ROOT_ID = "mo-marker-root";
@@ -54,6 +54,38 @@ export const MARKER_COLORS_DARK: MarkerColor[] = [
 
 export const MARKER_COLORS = MARKER_COLORS_LIGHT;
 
+export const DEFAULT_SETTINGS: Settings = {
+  attachmentMode: "point",
+  colorblindMode: false,
+  themeMode: "system",
+  overlayVisible: true
+};
+
+export function normalizeSettings(raw: unknown): Settings {
+  const settings = raw && typeof raw === "object"
+    ? raw as Record<string, unknown>
+    : {};
+
+  const attachmentMode = settings.attachmentMode;
+  const themeMode = settings.themeMode;
+
+  return {
+    attachmentMode: attachmentMode === "orthogonal" || attachmentMode === "leadline"
+      ? attachmentMode
+      : DEFAULT_SETTINGS.attachmentMode,
+    colorblindMode: Boolean(settings.colorblindMode),
+    themeMode: themeMode === "light"
+      || themeMode === "dark"
+      || themeMode === "system-inverse"
+      || themeMode === "system"
+      ? themeMode
+      : DEFAULT_SETTINGS.themeMode,
+    overlayVisible: settings.overlayVisible === undefined
+      ? DEFAULT_SETTINGS.overlayVisible
+      : Boolean(settings.overlayVisible)
+  };
+}
+
 function prefersDarkTheme(): boolean {
   return typeof window !== "undefined"
     && typeof window.matchMedia === "function"
@@ -79,7 +111,6 @@ export const state: State = {
   pageUrl: getPageUrl(location.href),
   annotations: [],
   storageDegraded: false,
-  mcpConnected: null,
   mode: "idle",
   placementMode: null,
   overlayVisible: true,
@@ -99,14 +130,7 @@ export const state: State = {
   placedHighlightIds: new Set<string>(),
   drawing: null,
   expandedPanel: null,
-  settings: {
-    attachmentMode: "point",
-    colorblindMode: false,
-    themeMode: "system",
-    overlayVisible: true,
-    mcpEnabled: false,
-    mcpPort: 18462
-  }
+  settings: { ...DEFAULT_SETTINGS }
 };
 
 export const renderedIds = new Set<string>();

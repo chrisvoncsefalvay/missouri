@@ -1,5 +1,5 @@
 import type { Annotation, StoredData } from "./types";
-import { state, refs, renderedIds, CURRENT_SCHEMA_VERSION, getActiveMarkerColors } from "./state";
+import { state, refs, renderedIds, CURRENT_SCHEMA_VERSION, getActiveMarkerColors, normalizeSettings } from "./state";
 import { undoStack } from "./undo";
 import { makeId, storageKeyForPage } from "./utils";
 import { captureElementAnchor, findAnchoredElement, resolveTextRange } from "./anchoring";
@@ -259,8 +259,12 @@ export async function loadAnnotations(): Promise<void> {
 export async function loadSettings(): Promise<void> {
   try {
     const stored = await chrome.storage.local.get("mo_settings");
-    if (stored.mo_settings) {
-      state.settings = { ...state.settings, ...stored.mo_settings };
+    if (stored.mo_settings !== undefined) {
+      const normalizedSettings = normalizeSettings(stored.mo_settings);
+      state.settings = normalizedSettings;
+      if (JSON.stringify(stored.mo_settings) !== JSON.stringify(normalizedSettings)) {
+        await chrome.storage.local.set({ mo_settings: normalizedSettings });
+      }
     }
     state.overlayVisible = state.settings.overlayVisible;
     markStorageHealthy();
@@ -274,6 +278,7 @@ export async function loadSettings(): Promise<void> {
 
 export async function saveSettings(): Promise<void> {
   state.settings.overlayVisible = state.overlayVisible;
+  state.settings = normalizeSettings(state.settings);
   try {
     await chrome.storage.local.set({ mo_settings: state.settings });
     markStorageHealthy();

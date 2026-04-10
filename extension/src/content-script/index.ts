@@ -4,7 +4,7 @@ import { render, renderMarkers, hideHighlight } from "./markers";
 import { ensureUi, closeEditor, closeToolbarPanel } from "./ui";
 import { loadAnnotations, loadSettings, upsertAnnotationFromPopup, deleteAnnotation, saveSettings } from "./annotations";
 import { handleKeydown, handlePointerMove, handlePageClick, handleMouseDown, handleMouseDrag, handleMouseUp, handleContextMenu, toggleMode, setPlacementMode, focusAnnotation, getPublicState } from "./interaction";
-import { mcpCreateAnnotation, mcpGetAnnotationBounds, mcpHighlightElement } from "./mcp";
+import { normalizeSettings } from "./state";
 
 init().catch((error) => {
   console.error("Missouri failed to initialize", error);
@@ -36,10 +36,7 @@ function bindEvents(): void {
       return;
     }
 
-    state.settings = {
-      ...state.settings,
-      ...(changes.mo_settings.newValue as Record<string, unknown>)
-    };
+    state.settings = normalizeSettings(changes.mo_settings.newValue);
     render();
   });
 
@@ -63,10 +60,6 @@ function bindEvents(): void {
 
 async function handleRuntimeMessage(message: any): Promise<any> {
   switch (message?.type) {
-    case "MCP_STATUS":
-      state.mcpConnected = Boolean(message.connected);
-      render();
-      return { ok: true };
     case "TOGGLE_MODE":
       toggleMode();
       return { ok: true, state: getPublicState() };
@@ -110,18 +103,6 @@ async function handleRuntimeMessage(message: any): Promise<any> {
     case "FOCUS_ANNOTATION":
       focusAnnotation(message.id);
       return { ok: true };
-    case "MCP_CREATE_ANNOTATION":
-      return await mcpCreateAnnotation(message);
-    case "MCP_DELETE_ANNOTATION":
-      if (message.id) {
-        await deleteAnnotation(message.id);
-        return { ok: true };
-      }
-      return { ok: false, error: "Missing annotation id" };
-    case "MCP_GET_ANNOTATION_BOUNDS":
-      return mcpGetAnnotationBounds(message.id);
-    case "MCP_HIGHLIGHT_ELEMENT":
-      return mcpHighlightElement(message.selector);
     default:
       return { ok: false, error: "Unknown message type" };
   }
