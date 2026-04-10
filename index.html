@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Missouri</title>
+    <meta name="description" content="Missouri is a Chrome extension for reviewing and annotating web pages locally in the browser.">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">Missouri</p>
+        <h1>Review any web page in your browser.</h1>
+        <p class="lede">Drop pins, attach notes to elements, highlight text, or sketch freehand. Annotations stay local in the browser and persist across reloads.</p>
+        <nav class="actions" aria-label="Primary">
+          <a href="https://github.com/chrisvoncsefalvay/missouri">GitHub</a>
+          <a href="privacy/">Privacy policy</a>
+          <a href="https://github.com/chrisvoncsefalvay/missouri/issues">Support</a>
+        </nav>
+      </header>
+
+      <section class="section">
+        <h2>What Missouri does</h2>
+        <ul>
+          <li>Pin comments anywhere on a page</li>
+          <li>Attach notes to specific elements</li>
+          <li>Highlight text for copy review</li>
+          <li>Draw directly over the page</li>
+          <li>Expose a page-level API for Playwright-based coding agents</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>Install</h2>
+        <p>Build the extension or download a release, then load the unpacked folder in Chrome or Chromium via <code>chrome://extensions</code>.</p>
+        <pre><code>cd extension
+npm install
+npm run build</code></pre>
+      </section>
+
+      <section class="section">
+        <h2>Privacy</h2>
+        <p>Missouri stores annotations, page identifiers, and extension settings in <code>chrome.storage.local</code>. It does not send annotation data to a remote backend as part of normal operation.</p>
+        <p><a href="privacy/">Read the full privacy policy</a>.</p>
+      </section>
+    </main>
+  </body>
+</html>
