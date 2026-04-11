@@ -2,9 +2,10 @@ import { state } from "./state";
 import { getPageKey, getPageUrl } from "./utils";
 import { render, renderMarkers, hideHighlight } from "./markers";
 import { ensureUi, closeEditor, closeToolbarPanel } from "./ui";
-import { loadAnnotations, loadSettings, upsertAnnotationFromPopup, deleteAnnotation, saveSettings } from "./annotations";
+import { loadAnnotations, loadSettings, upsertAnnotationFromPopup, deleteAnnotation, persistAnnotations, saveSettings } from "./annotations";
 import { handleKeydown, handlePointerMove, handlePageClick, handleMouseDown, handleMouseDrag, handleMouseUp, handleContextMenu, toggleMode, setPlacementMode, focusAnnotation, getPublicState } from "./interaction";
 import { normalizeSettings } from "./state";
+import { createAnnotationFromApi, highlightElementFromApi } from "./page-api";
 
 init().catch((error) => {
   console.error("Missouri failed to initialize", error);
@@ -38,6 +39,81 @@ function bindEvents(): void {
 
     state.settings = normalizeSettings(changes.mo_settings.newValue);
     render();
+  });
+
+  // Bridge: receive __mo_dispatch__ from MAIN-world page-api.ts,
+  // handle the command, and reply with __mo_dispatch_response__.
+  document.addEventListener("__mo_dispatch__", async (event: Event) => {
+    const { requestId, command, params } = (event as CustomEvent).detail ?? {};
+    if (!requestId) return;
+
+    let result: any;
+    try {
+      switch (command) {
+        case "list_annotations":
+          result = { ok: true, data: state.annotations };
+          break;
+        case "get_annotation": {
+          const ann = state.annotations.find((a) => a.id === params?.id);
+          result = ann
+            ? { ok: true, data: ann }
+            : { ok: false, error: "Annotation not found" };
+          break;
+        }
+        case "get_page_info":
+          result = {
+            ok: true,
+            data: {
+              url: state.pageUrl,
+              title: document.title,
+              annotationCount: state.annotations.length,
+            },
+          };
+          break;
+        case "create_annotation":
+          result = await createAnnotationFromApi(params);
+          break;
+        case "update_annotation": {
+          const idx = state.annotations.findIndex((a) => a.id === params?.id);
+          if (idx === -1) {
+            result = { ok: false, error: "Annotation not found" };
+            break;
+          }
+          const updated = { ...state.annotations[idx] };
+          if (params.note !== undefined) updated.note = params.note;
+          if (params.authorName !== undefined) updated.authorName = params.authorName;
+          updated.updatedAt = new Date().toISOString();
+          const next = [...state.annotations];
+          next[idx] = updated;
+          await persistAnnotations(next);
+          render();
+          result = { ok: true, data: updated };
+          break;
+        }
+        case "delete_annotation":
+          await deleteAnnotation(params?.id);
+          render();
+          result = { ok: true };
+          break;
+        case "focus_annotation":
+          focusAnnotation(params?.id);
+          result = { ok: true };
+          break;
+        case "highlight_element":
+          result = highlightElementFromApi(params?.selector);
+          break;
+        default:
+          result = { ok: false, error: `Unknown command: ${command}` };
+      }
+    } catch (err) {
+      result = { ok: false, error: String(err) };
+    }
+
+    document.dispatchEvent(
+      new CustomEvent("__mo_dispatch_response__", {
+        detail: { requestId, result },
+      })
+    );
   });
 
   document.addEventListener("keydown", handleKeydown, true);

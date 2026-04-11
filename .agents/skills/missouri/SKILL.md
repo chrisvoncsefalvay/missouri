@@ -3,23 +3,9 @@ name: missouri
 description: Use when the user has page annotations from the Missouri Chrome extension, or asks you to look at, highlight, mark up, or comment on elements in a web page. Provides guidance on using Playwright page.evaluate() to read annotations, create markers, focus elements, and interact with Missouri's page API.
 ---
 
-# Missouri — Page Annotations for Coding Agents
+# Missouri -- Page Annotations for Coding Agents
 
-Missouri is a Chrome extension that lets users place visible annotations (markers, highlights, drawings) on any web page. When you browse with Playwright, you can read, create, and interact with these annotations via `page.evaluate()` — no server, no configuration.
-
-## Install
-
-Preferred install:
-
-```bash
-npx skills add chrisvoncsefalvay/missouri
-```
-
-Manual install:
-
-1. Download the `missouri-skills-universal-<version>.zip` asset from GitHub Releases.
-2. Unzip it.
-3. Copy the folder matching your harness layout (for example `.agents/skills/missouri` or `.claude/skills/missouri`) into your project root or user-level skills directory.
+Missouri is a Chrome extension that lets users place visible annotations (markers, highlights, drawings) on any web page. When you browse with Playwright, you can read, create, and interact with these annotations via `page.evaluate()` -- no server, no configuration.
 
 ## When to use this skill
 
@@ -31,15 +17,15 @@ Manual install:
 
 ## Discovery
 
-Missouri injects a shadow root with id `mo-marker-root` into every page. To check if Missouri is active:
+Missouri injects an element with id `mo-marker-root` into every page. Check if Missouri is active:
 
 ```js
 await page.evaluate(() => !!document.getElementById('mo-marker-root'))
 ```
 
-The dispatch API is available at `window.__moDispatch(command, params)`. It returns a Promise.
+The dispatch API is available at `window.__moDispatch(command, params)`. It returns a Promise. **If `__moDispatch` times out (10s), fall back to reading the DOM directly** -- see "DOM fallback" below.
 
-## Commands
+## Preferred approach: `__moDispatch`
 
 All commands are invoked via `page.evaluate()`:
 
@@ -67,29 +53,106 @@ const result = await page.evaluate(() => window.__moDispatch('command_name', { .
 
 | Command | Params | Returns |
 |---------|--------|---------|
-| `focus_annotation` | `{ id }` | `{ ok }` — scrolls to and pulses the marker |
-| `highlight_element` | `{ selector }` | `{ ok, data: { selector, tagName } }` — temporary blue highlight |
+| `focus_annotation` | `{ id }` | `{ ok }` -- scrolls to and pulses the marker |
+| `highlight_element` | `{ selector }` | `{ ok, data: { selector, tagName } }` -- temporary blue highlight |
+
+## DOM fallback (read-only)
+
+If `__moDispatch` times out or errors, you can read annotations directly from the DOM. Missouri renders markers inside `#mo-marker-root` with data attributes on each marker element.
+
+### Detect and decide which approach to use
+
+```js
+const info = await page.evaluate(() => {
+  const hasRoot = !!document.getElementById('mo-marker-root');
+  const hasDispatch = typeof window.__moDispatch === 'function';
+  return { hasRoot, hasDispatch };
+});
+```
+
+### Read all annotations from the DOM
+
+```js
+const annotations = await page.evaluate(() => {
+  const markers = document.querySelectorAll('[data-mo-marker-id]');
+  return Array.from(markers).map(el => {
+    const noteEl = el.querySelector('.mo-marker-note');
+    const strongEl = noteEl?.querySelector('strong');
+    const noteText = noteEl
+      ? noteEl.textContent?.replace(strongEl?.textContent || '', '').trim()
+      : '';
+    return {
+      id: el.getAttribute('data-mo-marker-id'),
+      type: el.getAttribute('data-mo-marker-type'),
+      resolved: el.getAttribute('data-mo-marker-resolved'),
+      note: noteText,
+      label: el.querySelector('button')?.textContent?.trim() || null,
+      rect: el.getBoundingClientRect()
+    };
+  });
+});
+```
+
+This gives you the annotation ID, type, note text, label and position. It works even when the extension's service worker is unresponsive.
+
+**Limitations of DOM fallback:**
+- Read-only -- you cannot create, update, or delete annotations
+- Does not include full anchor/selector metadata
+- Position is viewport-relative (current scroll), not page-absolute
+
+## Recommended workflow
+
+```
+1. Check discovery: mo-marker-root exists?
+2. Try __moDispatch('list_annotations') with a short wrapper:
+     try { return await page.evaluate(() => window.__moDispatch('list_annotations')) }
+     catch { /* fall through to DOM fallback */ }
+3. If that times out or errors, use the DOM fallback query above
+4. Parse annotation notes to understand user intent
+5. Make changes, then reply via create_annotation or update_annotation
+   (these require working __moDispatch -- if dispatch is broken, tell the user)
+```
 
 ## Understanding annotation data
 
 Each annotation contains:
 - **type**: `free` (placed anywhere), `element` (attached to a DOM element), `highlight` (text selection), `draw` (freehand)
-- **authorName**: display name for whoever created the annotation — set this to identify agent-created annotations (e.g. `"Claude (via Playwright)"`)
-- **note**: the user's text comment — this is their message to you
+- **authorName**: display name for whoever created the annotation -- set this to identify agent-created annotations (e.g. `"Claude (via Playwright)"`)
+- **note**: the user's text comment -- this is their message to you
 - **anchor**: for element markers, includes `selector` (CSS path), `tagName`, and `text` (element content, truncated to 120 chars)
 - **anchor.selectedText**: for highlights, the exact text the user selected
-- **position**: `{ pageX, pageY }` — where the marker is on the page
+- **position**: `{ pageX, pageY }` -- where the marker is on the page
 - **letter**: optional A-Z label the user assigned (for referencing: "look at marker B")
-- **colorIndex**: 0=dark, 1=blue, 2=gold, 3=purple — users may use colors to categorize
+- **colorIndex**: 0=dark, 1=blue, 2=gold, 3=purple -- users may use colours to categorise
 - **resolved**: whether the target element/text was found in the current DOM
 
 ## Examples
 
-### Read all annotations
+### Read all annotations (with fallback)
 
 ```js
-const { data } = await page.evaluate(() => window.__moDispatch('list_annotations'))
-// data is an array of Annotation objects
+let annotations;
+try {
+  const res = await page.evaluate(
+    () => window.__moDispatch('list_annotations')
+  );
+  annotations = res.data;
+} catch {
+  // Dispatch unavailable -- read DOM directly
+  annotations = await page.evaluate(() => {
+    const markers = document.querySelectorAll('[data-mo-marker-id]');
+    return Array.from(markers).map(el => {
+      const noteEl = el.querySelector('.mo-marker-note');
+      const strong = noteEl?.querySelector('strong');
+      return {
+        id: el.getAttribute('data-mo-marker-id'),
+        type: el.getAttribute('data-mo-marker-type'),
+        note: noteEl?.textContent?.replace(strong?.textContent || '', '').trim() || '',
+        label: el.querySelector('button')?.textContent?.trim() || null,
+      };
+    });
+  });
+}
 ```
 
 ### Create an element annotation
@@ -145,7 +208,7 @@ await page.evaluate((id) => window.__moDispatch('delete_annotation', { id }), an
 
 ## Workflow patterns
 
-### "What am I looking at?" — Reading the user's annotations
+### "What am I looking at?" -- Reading the user's annotations
 
 ```
 1. page.evaluate(() => window.__moDispatch('get_page_info'))
@@ -153,7 +216,7 @@ await page.evaluate((id) => window.__moDispatch('delete_annotation', { id }), an
 3. Read each annotation's note + anchor to understand context
 ```
 
-### "Show me where X is" — Highlighting for the user
+### "Show me where X is" -- Highlighting for the user
 
 ```
 1. highlight_element with the CSS selector (temporary)
@@ -162,23 +225,50 @@ await page.evaluate((id) => window.__moDispatch('delete_annotation', { id }), an
 2. focus_annotation to scroll it into view
 ```
 
-### "Reply to annotation B" — Responding to user feedback
+### "Reply to annotation B" -- Responding to user feedback
 
 ```
-1. list_annotations → find the annotation with letter "B"
-2. update_annotation → edit the note with your response
+1. list_annotations -> find the annotation with letter "B"
+2. update_annotation -> edit the note with your response
    OR
-2. create_annotation → place a new marker nearby with your reply
+2. create_annotation -> place a new marker nearby with your reply
+```
+
+## Troubleshooting
+
+### `__moDispatch` times out after 10 seconds
+
+This is the most common issue. Causes:
+- **Chrome launched with `--user-data-dir`**: a fresh debug profile may not fully initialise the extension's service worker. The DOM fallback still works for reading.
+- **Page was reloaded**: the content script re-injects, but may take a moment. Wait 2-3 seconds after reload, then retry once.
+- **Extension not fully loaded**: on very heavy pages, the content script can be slow to initialise.
+
+**Do not** waste time debugging CDP targets, isolated execution contexts, or service worker internals. If dispatch fails, use the DOM fallback for reading and tell the user if write operations are unavailable.
+
+### `mo-marker-root` not found
+
+Missouri is not installed or not enabled on this page. Check that the extension is loaded in the browser.
+
+### Markers visible in screenshot but not in DOM query
+
+The markers are in the DOM under `#mo-marker-root`. If `querySelectorAll('[data-mo-marker-id]')` returns nothing, try querying inside the root element's shadow root:
+
+```js
+const root = document.getElementById('mo-marker-root');
+const shadow = root?.shadowRoot;
+const markers = shadow
+  ? shadow.querySelectorAll('[data-mo-marker-id]')
+  : document.querySelectorAll('[data-mo-marker-id]');
 ```
 
 ## Tips
 
 - Always call `list_annotations` first to see what the user has marked before taking action
-- Use `type: "element"` with a `selector` when you know the CSS selector — the marker tracks the element even if the page reflows
+- Use `type: "element"` with a `selector` when you know the CSS selector -- the marker tracks the element even if the page reflows
 - Use `type: "free"` with `pageX` / `pageY` for pixel-precise placement
 - Use `colorIndex: 3` (purple) by default for agent-created annotations to distinguish them from user markers
 - Set `authorName` to identify your annotations (e.g. `"Claude (via Playwright)"`)
 - Annotations with `resolved: false` mean the DOM has changed since the annotation was placed
 - The `anchor.text` field gives visible text content, often more useful than the CSS selector for understanding intent
-- When multiple annotations exist, pay attention to `letter` labels — users assign these for easy reference
+- When multiple annotations exist, pay attention to `letter` labels -- users assign these for easy reference
 - All changes persist to `chrome.storage.local` and survive page reloads
